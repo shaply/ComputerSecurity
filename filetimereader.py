@@ -45,24 +45,30 @@ def filelister(startpath):
   return allfiles
 
 def filetimewriter(files):
+  import os
+  os.chdir(startlocation)
   # Variable for writing file dates in the csv file
-  dataWriter = open("filedata.txt", "w")
-  dataWriter.write("FileName"+","+"Date changed"+","+"Date Modified"+","+"\n")
+  with open("filedata.csv", "w") as dataWriter:
+    dataWriter.write("FileName"+","+"Date changed"+","+"Date Modified"+","+"\n")
 
-  for File in files:
-    output=subprocess.check_output(f"stat -c %z {File}", shell=True).decode()
-    output2 = subprocess.check_output(f"stat -c %y {File}", shell=True).decode()
-    #Make text to write in file, good format
-    writee=File+','+output[:-1]+','+output2[:-1]+','+'\n'
-    writee=writee[2:]
-    nWritee=''
-    for char in writee:
-      nWritee+=char
-      if "''/" in nWritee:
-        nWritee=nWritee[:-3]
+    for File in files:
+      output=subprocess.check_output(f"stat -c %z {File}", shell=True).decode().split()
+      output2 = subprocess.check_output(f"stat -c %y {File}", shell=True).decode().split()
+      #Make text to write in file, good format
+      writee=File+','+output[0]+' '+output[2]+','+output2[0]+' '+output2[2]+','+'\n'
+      print(writee)
+      if writee[:2]=="''":
+        writee=writee[2:]
+      nWritee=''
+      for char in writee:
+        nWritee+=char
+        if "''/" in nWritee:
+          nWritee=nWritee[:-3]
 
-    dataWriter.write(nWritee)
+      dataWriter.write(nWritee)
 
-  dataWriter.close()
+global startlocation
+startlocation = os.getcwd()
 
-allfiles = filetimewriter(filelister("/"))
+allfiles = filelister("/home/dave/Desktop")
+filetimewriter(allfiles)
