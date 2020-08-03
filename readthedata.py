@@ -48,7 +48,7 @@ while ques.lower()!="done":
       ques=input("What is the path and filename(EX| /home/John/hi.txt) or for contents in path(EX| /home/John/)? ")
     for file in data:
       if file[0] in ques or ques in file[0]:
-        print(f"{file[0]}, 'ChangedDate:{file[1]}', 'ModifiedDate:{file[2]}'")
+        print("%s, 'ChangedDate:%s', 'ModifiedDate:%s'"%(file[0],file[1],file[2]))
         if ques[-1]!="/":
           break
 
