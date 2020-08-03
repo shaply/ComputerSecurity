@@ -41,7 +41,7 @@ def filelister(startpath):
       print("'"+path+File+"'")
       allfiles=allfiles+filelister(path+File)
     else:
-      allfiles.append("'"+path+f"{File}'")
+      allfiles.append("'"+path+"%s'"%(File))
   return allfiles
 
 def filetimewriter(files):
@@ -52,8 +52,8 @@ def filetimewriter(files):
     dataWriter.write("FileName"+","+"Date changed"+","+"Date Modified"+","+"\n")
 
     for File in files:
-      output=subprocess.check_output(f"stat -c %z {File}", shell=True).decode().split()
-      output2 = subprocess.check_output(f"stat -c %y {File}", shell=True).decode().split()
+      output=subprocess.check_output("stat -c %z %s"%(File), shell=True).decode().split()
+      output2 = subprocess.check_output("stat -c %y %s"%(File), shell=True).decode().split()
       #Make text to write in file, good format
       writee=File+','+output[0]+' '+output[2]+','+output2[0]+' '+output2[2]+','+'\n'
       print(writee)
