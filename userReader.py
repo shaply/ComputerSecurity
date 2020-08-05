@@ -29,11 +29,10 @@ with open("/etc/group") as file:
   d = file.readline()
   while "sudo" not in d:
     d=file.readline()
-print(d)
+d=d[:-1]
 splitted=d.split(":")
 usersInSudo=splitted[3].split(",")
-print(usersInSudo)
 for user in usersInSudo:
   if user in users:
-    #os.system("gpasswd -d %s sudo"%(user))
+    os.system("gpasswd -d %s sudo"%(user))
     pass
