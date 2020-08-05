@@ -24,3 +24,16 @@ with open("PCusers.txt") as file:
   for user in users:
     if user not in allusers:
       os.system("userdel %s"%(user))
+
+with open("/etc/group") as file:
+  d = file.readline()
+  while "sudo" not in d:
+    d=file.readline()
+print(d)
+splitted=d.split(":")
+usersInSudo=splitted[3].split(",")
+print(usersInSudo)
+for user in usersInSudo:
+  if user in users:
+    #os.system("gpasswd -d %s sudo"%(user))
+    pass
