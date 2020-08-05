@@ -15,13 +15,12 @@ with open("PCusers.txt") as file:
         if which=="users":
           users.append(row)
   allusers=admins+users
-  print(admins, users)
 
   #Doesn't delete users from sudo group yet
   import os
   os.chdir("/home")
-  users=os.listdir()
-  for user in users:
+  allUser=os.listdir()
+  for user in allUser:
     if user not in allusers:
       os.system("userdel %s"%(user))
 
@@ -29,9 +28,12 @@ with open("/etc/group") as file:
   d = file.readline()
   while "sudo" not in d:
     d=file.readline()
+
+print("users", users)
 d=d[:-1]
 splitted=d.split(":")
 usersInSudo=splitted[3].split(",")
+print(usersInSudo)
 for user in usersInSudo:
   if user in users:
     os.system("gpasswd -d %s sudo"%(user))
