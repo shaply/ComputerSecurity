@@ -478,6 +478,8 @@ read -p "Waiting for update settings to be fixed"
 apt upgrade
 apt update
 
+read -p "Fix lightdm"
+
 echo "Creating filetimereader.py and readthedata.py"
 echo "JK create it yourself"
 read -p "Create filetimereader.py and readthedata.py"
