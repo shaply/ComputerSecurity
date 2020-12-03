@@ -15,6 +15,9 @@ cp /etc/passwd ~/Desktop/backups/
 cp /etc/login.defs ~/Desktop/backups/
 
 echo "Editting login.defs"
+nums='160 161 162 163 279 151 167 168 42 50 61 62'
+for i in $nums; do sed -n $( echo $i )p /etc/login.defs; done
+read -p 'Make sure all the lines are correct'
 #If you did '160s/.*/PASS_MAX_DAYS\o01130/' The o011 would just mean type a tab
 sed -i '160s/.*/PASS_MAX_DAYS\ 30/' /etc/login.defs
 sed -i '161s/.*/PASS_MIN_DAYS\ 3/' /etc/login.defs
@@ -28,7 +31,6 @@ sed -i '42s/.*/FAILLOG_ENAB\ yes/' /etc/login.defs
 sed -i '50s/.*/LOG_UNKFAIL_ENAB\ yes/' /etc/login.defs
 sed -i '61s/.*/SYSLOG_SU_ENAB\ yes/' /etc/login.defs
 sed -i '62s/.*/SYSLOG_SG_ENAB\ yes/' /etc/login.defs
-nums='160 161 162 163 279 151 167 168 42 50 61 62'
 for i in $nums; do sed -n $( echo $i )p /etc/login.defs; done
 read -p 'Make sure all the lines are correct'
 echo "Password policies have been set with /etc/login.defs."
