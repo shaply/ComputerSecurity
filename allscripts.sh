@@ -5,6 +5,7 @@ echo "Linux Ubuntu Script\nThe Ultimate One\nLet's Pray it Works"
 
 read -p "Make Sure you have done the forensics Questions"
 read -p "Did you run as root? If not, rerun"
+read -p "Did you make this in ~/Desktop/"
 
 mkdir -p ~/Desktop/backups
 chmod 777 ~/Desktop/backups
@@ -21,8 +22,7 @@ read -p 'Make sure all the lines are correct'
 #If you did '160s/.*/PASS_MAX_DAYS\o01130/' The o011 would just mean type a tab
 sed -i '160s/.*/PASS_MAX_DAYS\ 30/' /etc/login.defs
 sed -i '161s/.*/PASS_MIN_DAYS\ 3/' /etc/login.defs
-sed -i '162s/.*/PASS_MIN_LEN\ 8/' /etc/login.defs
-sed -i '163s/.*/PASS_WARN_AGE\ 7/' /etc/login.defs
+sed -i '162s/.*/PASS_WARN_AGE\ 8/' /etc/login.defs
 sed -i '279s/.*/ENCRYPT_METHOD\ SHA512/' /etc/login.defs
 sed -i '151s/.*/UMASK\ 077/' /etc/login.defs
 sed -i '167s/.*/UID_MIN\ 1000/' /etc/login.defs
@@ -296,23 +296,23 @@ echo "HOSTS file has been set to defaults."
 
 if [ $sambaYN == Y ]
 then
-echo "Fixing Samba"
-echo "STILL NEED TO DO THIS"
+  echo "Fixing Samba"
+  echo "STILL NEED TO DO THIS"
 elif [ $sambaYN == N ]
-echo "Killing Samba"
-ufw deny netbios-ns
-ufw deny netbios-dgm
-ufw deny netbios-ssn
-ufw deny microsoft-ds
-apt-get purge samba -y -qq
-apt-get purge samba-common -y  -qq
-apt-get purge samba-common-bin -y -qq
-apt-get purge samba4 -y -qq
-clear
-echo "netbios-ns, netbios-dgm, netbios-ssn, and microsoft-ds ports have been denied. Samba has been removed."
 then
+  echo "Killing Samba"
+  ufw deny netbios-ns
+  ufw deny netbios-dgm
+  ufw deny netbios-ssn
+  ufw deny microsoft-ds
+  apt-get purge samba -y -qq
+  apt-get purge samba-common -y  -qq
+  apt-get purge samba-common-bin -y -qq
+  apt-get purge samba4 -y -qq
+  clear
+  echo "netbios-ns, netbios-dgm, netbios-ssn, and microsoft-ds ports have been denied. Samba has been removed."
 else
-echo "RESPONSE NOT RECOGNIZED FOR SAMBA"
+  echo "RESPONSE NOT RECOGNIZED FOR SAMBA"
 fi
 if [ $ftpYN == Y ]
 then
@@ -340,7 +340,7 @@ echo "Fixing ssh"
 apt-get install openssh-server -y -qq
 ufw allow ssh
 #sshconfig file is backed up by the python program. Dont worry
-sshconfig="#Open|and|read|the|config|file|for|ssh File='/etc/ssh/sshd_config' try: ||f|=|open('/etc/ssh/sshd_config') except: ||File|=|input('What|is|the|ssh|configuration|file?|File|path|included:|') ||f|=|open(File) d=f.read() #Backing|up|the|config|file w=open('~/Desktop/backups/sshconfig.txt','w') w.write(d) w.close() d=d.split('\n') #Start|Fixing configs=['AllowTcpForwarding','Protocol','X11Forwarding','PasswordAuthentication','PermitRootLogin','RSAAuthentication','PubkeyAuthentication'] fixes=['no','2','no','no','no','yes','yes'] fixedtxt='' for|i|in|text: ||for|j|in|range(len(configs)): ||||if|configs[j]|in|i: ||||||x=i.split('|') ||||||x[1]=fixes[j] ||||||i=x[0]+'|'+fixes[j] ||||||break ||fixedtxt+=i+'\n' #Write|configs f=open(File) f.write(fixedtxt) f.close()"
+sshconfig="#Open|and|read|the|config|file|for|ssh File='/etc/ssh/sshd_config' try: ||f|=|open('/etc/ssh/sshd_config') except: ||File|=|input('What|is|the|ssh|configuration|file?|File|path|included:|') ||f|=|open(File) d=f.read() #Backing|up|the|config|file w=open('backups/sshconfig.txt','w') w.write(d) w.close() text=d.split('\n') #Start|Fixing configs=['AllowTcpForwarding','Protocol','X11Forwarding','PasswordAuthentication','PermitRootLogin','RSAAuthentication','PubkeyAuthentication'] fixes=['no','2','no','no','no','yes','yes'] fixedtxt='' for|i|in|text: ||for|j|in|range(len(configs)): ||||if|configs[j]|in|i: ||||||x=i.split('|') ||||||x[1]=fixes[j] ||||||i=x[0]+'|'+fixes[j] ||||||break ||fixedtxt+=i+'\n' #Write|configs f=open(File,'w') f.write(fixedtxt) f.close()"
 echo '' > sshconfig.py
 for i in $sshconfig; do i=$( tr '|' ' ' <<<"$i" ); echo "$i" >> sshconfig.py; done
 python3 sshconfig.py
