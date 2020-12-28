@@ -1,4 +1,4 @@
-#!/bin/bash
+#! /bin/bash
 
 echo "Make Sure You have Everything Set. All codes set. Root Set. Everything!"
 echo "Linux Ubuntu Script\nThe Ultimate One\nLet's Pray it Works"
@@ -10,19 +10,15 @@ read -p "Did you make this in ~/Desktop/"
 mkdir -p ~/Desktop/backups
 chmod 777 ~/Desktop/backups
 
-echo "Creating backups for /etc/group /etc/passwd /etc/login.defs in ~/Desktop/backups"
-cp /etc/group ~/Desktop/backups/
-cp /etc/passwd ~/Desktop/backups/
-cp /etc/login.defs ~/Desktop/backups/
-
 echo "Editting login.defs"
+cp /etc/login.defs ~/Desktop/backups/
 nums='160 161 162 163 279 151 167 168 42 50 61 62'
 for i in $nums; do sed -n $( echo $i )p /etc/login.defs; done
 read -p 'Make sure all the lines are correct'
 #If you did '160s/.*/PASS_MAX_DAYS\o01130/' The o011 would just mean type a tab
 sed -i '160s/.*/PASS_MAX_DAYS\ 30/' /etc/login.defs
 sed -i '161s/.*/PASS_MIN_DAYS\ 3/' /etc/login.defs
-sed -i '162s/.*/PASS_WARN_AGE\ 8/' /etc/login.defs
+sed -i '162s/.*/PASS_WARN_AGE\ 7/' /etc/login.defs
 sed -i '279s/.*/ENCRYPT_METHOD\ SHA512/' /etc/login.defs
 sed -i '151s/.*/UMASK\ 077/' /etc/login.defs
 sed -i '167s/.*/UID_MIN\ 1000/' /etc/login.defs
@@ -43,15 +39,14 @@ apt install python3
 apt-get install python3
 read -p "Make sure python3, sed, and vim work, if not manually download"
 
-echo "Changing the Passwords for every team to T3@m_C7Ickb@it"
+echo "Changing the Passwords for every user to T3@m_C7Ickb@it"
 USERS=$(getent passwd {1000..6000} | cut -d: -f1)
 apt install whois
 EncryptedPassword=$(mkpasswd -m sha-512 T3@m_C7Ickb@it)
 for USER in $USERS; do
-usermod -p $EncryptedPassword $USER
-passwd -x30 -n3 -w7 ${users[${i}]}
-echo "${users[${i}]}'s password has been given a maximum age o
-f 30 days, minimum of 3 days, and warning of 7 days. ${users[${i}]}'s account has b
+  usermod -p $EncryptedPassword $USER
+  passwd -x30 -n3 -w7 ${users[${i}]}
+  echo "${users[${i}]}'s password has been given a maximum age of 30 days, minimum of 3 days, and warning of 7 days. ${users[${i}]}'s account has b
 een locked." ;
 done
 
@@ -59,25 +54,24 @@ echo "Do you need to add a user, if so type the users account name, other wise t
 read userYN
 while [ $userYN != N ]
 do adduser $userYN
-echo "$userYN has been created"
-echo "Do you want to make $userYN an admin?"
-read adminYN
-if [ $adminYN == yes ]
-then 
-gpasswd -a $userYN sudo
-gpasswd -a $userYN adm
-gpasswd -a $userYN lpadmin
-gpasswd -a $userYN sambashare
-echo "$userYN is an admin"
-else
-echo "$userYN is a standard user"
-fi
-passwd -x30 -n3 -w7 $userYN
-usermod -p $EncryptedPassword $USER
-echo "$userYN has been set"
-echo "Do you need to add a user, if so type the users account name, other wise type
- N"
-read userYN
+  echo "$userYN has been created"
+  echo "Do you want to make $userYN an admin?"
+  read adminYN
+  if [ $adminYN == yes ]
+  then 
+    gpasswd -a $userYN sudo
+    gpasswd -a $userYN adm
+    gpasswd -a $userYN lpadmin
+    gpasswd -a $userYN sambashare
+    echo "$userYN is an admin"
+  else
+    echo "$userYN is a standard user"
+  fi
+  passwd -x30 -n3 -w7 $userYN
+  usermod -p $EncryptedPassword $USER
+  echo "$userYN has been set"
+  echo "Do you need to add a user, if so type the users account name, other wise type N"
+  read userYN
 done
 
 read -p "Make sure you have created PCusers.txt with all the users copied in it"
@@ -91,9 +85,9 @@ python3 userReader.py
 echo "Checking Root UID If not 0, please change to 0"
 ROOTUID=$(id -u root)
 if [ $ROOTUID -ne 0 ]; then
-read -p "Fix Root UID to 0\nYou can do 'id -u root' to look at the UID of root\nthen go to /etc/passwd and change the UID\nSearch if you are unable to\nroot:x:0:0:root:/root:/bin/bash\nIt should look something like that"
+  read -p "Fix Root UID to 0\nYou can do 'id -u root' to look at the UID of root\nthen go to /etc/passwd and change the UID\nSearch if you are unable to\nroot:x:0:0:root:/root:/bin/bash\nIt should look something like that"
 else
-echo "Root UID is set to 0"
+  echo "Root UID is set to 0"
 fi
 
 echo "Finding All media files, putting in media file: ~/Desktop/mediafiles.txt"
@@ -182,7 +176,40 @@ find / -name "*.php" -type f >> ~/Desktop/phpfiles.txt
 echo "All PHP files have been listed above. ('/var/cache/dictionaries-common/sqspell.php' is a system PHP file)"
 read -p "php files in phpfiles.txt"
 
-read -p "removing hacking tools, is that ok, do you still need them"
+unalias -a
+echo "all alias have been removed. to add an alias, do: alias 'alias_name'='command' so like 'll'='ls -l'"
+
+chmod 604 /etc/shadow
+echo "Read/Write permissions on shadow have been set."
+
+chmod 640 .bash_history
+echo "Bash history file permissions set .bash_history"
+
+find /bin/ -name "*.sh" -type f -delete
+echo "Scripts in bin have been removed."
+
+cp /etc/rc.local ~/Desktop/backups/
+echo > /etc/rc.local
+echo 'exit 0' >> /etc/rc.local
+echo "Any startup scripts have been removed."
+
+apt-get install ufw -y -qq
+ufw enable
+ufw deny 1337
+echo "Firewall enabled and port 1337 blocked."
+apt-get install gufw 
+read -p "Turn the options 'incoming' to reject, 'outgoing' to allow, 'status' to on, 'profile' to home"
+gufw
+read -p "Turn the options 'incoming' to reject, 'outgoing' to allow, 'status' to on, 'profile' to home"
+
+cp /etc/sudoers.d  ~/Desktop/backups/
+read -p "Check for any files for users that should not be administrators in /etc/sudoers.d."
+
+echo "Installing clamav the virus scanner"
+apt-get install clamav
+clamscan -r -i
+read -p "Read for vulnerabilities"
+
 echo "Removing Netcat"
 apt-get purge netcat -y -qq
 apt-get purge netcat-openbsd -y -qq
@@ -225,47 +252,28 @@ dpkg -l | egrep "crack|hack" >> ~/Desktop/Script.log
 apt-get purge logkeys -y -qq
 echo "LogKeys has been removed."
 
-echo "Locking root account"
-usermod -L root
+echo "Check the settings of updates"
+echo "Instead of clicking update, click settings"
+update-manager
 
-unalias -a
-echo "all alias have been removed. to add an alias, do: alias 'alias_name'='command' so like 'll'='ls -l'"
+read -p "Waiting for update settings to be fixed"
 
-chmod 604 /etc/shadow
-echo "Read/Write permissions on shadow have been set."
+apt update
+apt upgrade
+apt update
 
-chmod 640 .bash_history
-echo "Bash history file permissions set .bash_history"
-
-find /bin/ -name "*.sh" -type f -delete
-echo "Scripts in bin have been removed."
-
-cp /etc/rc.local ~/Desktop/backups/
-echo > /etc/rc.local
-echo 'exit 0' >> /etc/rc.local
-echo "Any startup scripts have been removed."
-
-apt-get install ufw -y -qq
-ufw enable
-ufw deny 1337
-echo "Firewall enabled and port 1337 blocked."
-
-cp /etc/sudoers.d  ~/Desktop/backups/
-read -p "Check for any files for users that should not be administrators in /etc/sudoers.d."
+echo "AutoRemoving"
+apt autoremove -y -qq
+apt autoclean -y -qq
 
 echo "Writing script to fix sysctl.conf"
-scriptsysctlconfig="#open|/etc/sysctl.conf|and|read f=open('/etc/sysctlf.conf') text=f.read().split('\n') f.close() #Make|configs configs=['kernel.randomize_va_space','net.ipv4.icmp_echo_ignore_all','net.ipv4.ip_forward','net.ipv4.ip_forward','net.ipv4.conf.all.rp_filter','net.ipv4.conf.default.rp_filter','net.ipv4.icmp_echo_ignore_broadcasts','net.ipv4.conf.all.accept_source_route','net.ipv6.conf.all.accept_source_route','net.ipv4.conf.default.accept_source_route','net.ipv4.conf.all.send_redirects','net.ipv4.conf.default.send_redirects','net.ipv4.tcp_syncookies','net.ipv4.tcp_max_syn_backlog','net.ipv4.tcp_synack_retries','net.ipv4.tcp_syn_retries','net.ipv4.conf.all.log_martians','net.ipv4.icmp_ignore_bogus_error_responses','net.ipv4.conf.all.accept_redirects','net.ipv4.conf.default.accept_redirects','net.ipv4.conf.all.secure_redirects','net.ipv4.conf.default.secure_redirects','net.ipv6.conf.default.router_solicitations','net.ipv6.conf.default.accept_ra_rtr_pref','net.ipv6.conf.default.accept_ra_pinfo','net.ipv6.conf.default.accept_ra_defrtr','net.ipv6.conf.default.autoconf','net.ipv6.conf.default.dad_transmits'] fixes=['2','1',|'0','0','1','1','1','0','0','0','0','0','1','2048','2','5','1','1','0','0','0','0','0','0','0','0','0','0'] fixedtxt='' for|i|in|text: ||for|j|in|range(len(configs)): ||||if|configs[j]|in|i: ||||||x=i.split('=') ||||||x[1]=fixes[j] ||||||i=x[0]+'='+fixes[j] ||||||break ||fixedtxt+=i+'\n' #Write|configs|in|/etc/sysctl.conf f=open('/etc/sysctl.conf') f.write(fixedtxt) f.close()"
+scriptsysctlconfig="import|os #open|/etc/sysctl.conf|and|read File='/etc/sysctl.conf' try: ||f=open(File) ||text=f.read() ||f.close() except: ||File=input('what|is|the|file|path|for|sysctl?|') ||f=open(File) ||text=f.read().split('\n') ||f.close() #Make|configs|with|pre|knowledge configs=['kernel.randomize_va_space','net.ipv4.ip_forward','net.ipv4.conf.all.rp_filter','net.ipv4.tcp_syncookies','net.ipv4.icmp_echo_ignore_broadcasts','net.ipv4.conf.all.log_martians'] fixes=['1','0','1','1','1','1'] fixedtxt=text for|i|in|range(len(configs)): ||if|configs[i]|in|'sysctlconfigs.txt': ||||fixedtxt+='\n'+configs[i]+'='+fixes[i] ||||os.system('sysctl|'+configs[i]+'='+fixes[i]) ||else: ||||tmpconfig=input(configs[i]|+|'|was|not|a|configuration|for|sysctl,|check|what|is|wrong|and|type|the|correct|configuration|name,|if|it|doesnt|exist,|type|N:|') ||||tmpfixed=input('What|is|the|correct|variable|for|it:|') ||||if|tmpconfig=='N'|or|tmpfixed=='N': ||||||continue ||||else: ||||||fixedtxt+='\n'+tmpconfig+'='+tmpfixed ||||||os.system('sysctl|'+tmpconfig+'='+tmpfixed) #Making|configs|with|search|in|terminal  #Write|configs|in|/etc/sysctl.conf f=open('/etc/sysctl.conf') f.write(fixedtxt) f.close()"
 #Replaces | with a ' ' and every space in the string is a newline in the file
 echo '' > sysctlconf.py
 for i in $scriptsysctlconfig; do i=$( tr '|' ' ' <<<"$i" ); echo "$i" >> sysctlconf.py; done
 cp /etc/sysctl.conf ~/Desktop/backups/
 python3 sysctlconf.py
 echo "Finished configuring /etc/sysctl.conf"
-
-cp /etc/default/irqbalance ~/Desktop/backups/
-echo > /etc/default/irqbalance
-echo -e "#Configuration for the irqbalance daemon\n\n#Should irqbalance be enabled?\nENABLED=\"0\"\n#Balance the IRQs only once?\nONESHOT=\"0\"" >> /etc/default/irqbalance
-echo "IRQ Balance has been disabled."
 
 echo "For each of the below questions, just put Y or N, DO NOT UNCAP IT iS Y or N"
 echo Does this machine need Samba?
@@ -286,13 +294,6 @@ echo Will this machine be a Web Server meaning apache2 is included in the PC?
 read httpYN
 echo Does this machine need DNS?
 read dnsYN
-
-chmod 777 /etc/hosts
-cp /etc/hosts ~/Desktop/backups/
-echo > /etc/hosts
-echo -e "127.0.0.1 localhost\n127.0.1.1 $USER\n::1 ip6-localhost ip6-loopback\nfe00::0 ip6-localnet\nff00::0 ip6-mcastprefix\nff02::1 ip6-allnodes\nff02::2 ip6-allrouters" >> /etc/hosts
-chmod 644 /etc/hosts
-echo "HOSTS file has been set to defaults."
 
 if [ $sambaYN == Y ]
 then
@@ -316,172 +317,187 @@ else
 fi
 if [ $ftpYN == Y ]
 then
-echo "STILL NEED TO DO THIS"
+  echo "STILL NEED TO DO THIS"
 elif [ $ftpYN == N ]
 then
-echo "Killing ftp"
-ufw deny ftp 
-ufw deny sftp 
-ufw deny saft 
-ufw deny ftps-data 
-ufw deny ftps
-apt-get purge vsftpd -y -qq
-apt-get purge pureftpd -y -qq
-apt-get purge pureftp -y -qq
-apt-get purge pure-ftpd -y -qq
-apt-get purge pure-ftp -y -qq
-echo "vsFTPd has been removed. ftp, sftp, saft, ftps-data, pure-ftpd, and ftps ports have been denied on the firewall."
+  echo "Killing ftp"
+  ufw deny ftp 
+  ufw deny sftp 
+  ufw deny saft 
+  ufw deny ftps-data 
+  ufw deny ftps
+  apt-get purge vsftpd -y -qq
+  apt-get purge pureftpd -y -qq
+  apt-get purge pureftp -y -qq
+  apt-get purge pure-ftpd -y -qq
+  apt-get purge pure-ftp -y -qq
+  echo "vsFTPd has been removed. ftp, sftp, saft, ftps-data, pure-ftpd, and ftps ports have been denied on the firewall."
 else
-echo "RESPONSE NOT RECOGNIZED FOR ftp"
+  echo "RESPONSE NOT RECOGNIZED FOR ftp"
 fi
 if [ $sshYN == Y ]
 then
-echo "Fixing ssh"
-apt-get install openssh-server -y -qq
-ufw allow ssh
-#sshconfig file is backed up by the python program. Dont worry
-sshconfig="#Open|and|read|the|config|file|for|ssh File='/etc/ssh/sshd_config' try: ||f|=|open('/etc/ssh/sshd_config') except: ||File|=|input('What|is|the|ssh|configuration|file?|File|path|included:|') ||f|=|open(File) d=f.read() #Backing|up|the|config|file w=open('backups/sshconfig.txt','w') w.write(d) w.close() text=d.split('\n') #Start|Fixing configs=['AllowTcpForwarding','Protocol','X11Forwarding','PasswordAuthentication','PermitRootLogin','RSAAuthentication','PubkeyAuthentication'] fixes=['no','2','no','no','no','yes','yes'] fixedtxt='' for|i|in|text: ||for|j|in|range(len(configs)): ||||if|configs[j]|in|i: ||||||x=i.split('|') ||||||x[1]=fixes[j] ||||||i=x[0]+'|'+fixes[j] ||||||break ||fixedtxt+=i+'\n' #Write|configs f=open(File,'w') f.write(fixedtxt) f.close()"
-echo '' > sshconfig.py
-for i in $sshconfig; do i=$( tr '|' ' ' <<<"$i" ); echo "$i" >> sshconfig.py; done
-python3 sshconfig.py
-service ssh restart
-mkdir ~/.ssh
-chmod 700 ~/.ssh
-ssh-keygen -t rsa
-echo "Fixed ssh"
+  echo "Fixing ssh"
+  apt-get install openssh-server -y -qq
+  ufw allow ssh
+  #sshconfig file is backed up by the python program. Dont worry
+  sshconfig="#Open|and|read|the|config|file|for|ssh File='/etc/ssh/  sshd_config' try: ||f|=|open('/etc/ssh/sshd_config') except: ||File|=|input('What|is|the|ssh|configuration|file?|File|path|included:|') ||f|=|open(File) d=f.read() #Backing|up|the|config|file w=open('backups/sshconfig.txt','w') w.write(d) w.close() text=d.split('\n') #Start|Fixing configs=['AllowTcpForwarding','Protocol','X11Forwarding','PasswordAuthentication','PermitRootLogin','RSAAuthentication','PubkeyAuthentication'] fixes=['no','2','no','no','no','yes','yes'] fixedtxt='' for|i|in|text: ||for|j|in|range(len(configs)): ||||if|configs[j]|in|i: ||||||x=i.split('|') ||||||x[1]=fixes[j] ||||||i=x[0]+'|'+fixes[j] ||||||break ||fixedtxt+=i+'\n' #Write|configs f=open(File,'w') f.write(fixedtxt) f.close()"
+  echo '' > sshconfig.py
+  for i in $sshconfig; do i=$( tr '|' ' ' <<<"$i" ); echo "$i" >> sshconfig.py; done
+  python3 sshconfig.py
+  service ssh restart
+  mkdir ~/.ssh
+  chmod 700 ~/.ssh
+  ssh-keygen -t rsa
+  echo "Fixed ssh"
 elif [ $sshYN == N ]
 then
-echo "Killing ssh"
-ufw deny ssh
-apt-get purge openssh-server -y -qq
-echo "SSH port has been denied on the firewall. Open-SSH has been removed."
+  echo "Killing ssh"
+  ufw deny ssh
+  apt-get purge openssh-server -y -qq
+  echo "SSH port has been denied on the firewall. Open-SSH has been removed."
 else
-echo "RESPONSE NOT RECOGNIZED FOR ssh"
+  echo "RESPONSE NOT RECOGNIZED FOR ssh"
 fi
 if [ $telnetYN == Y ]
 then
-echo "STILL NEED TO DO THIS"
+  echo "STILL NEED TO DO THIS"
 elif [ $telnetYN == N ]
 then
-echo "Killing Telnet"
-ufw deny telnet 
-ufw deny rtelnet 
-ufw deny telnets
-apt-get purge telnet -y -qq
-apt-get purge telnetd -y -qq
-apt-get purge inetutils-telnetd -y -qq
-apt-get purge telnetd-ssl -y -qq
-echo "Telnet port has been denied on the firewall and Telnet has been removed."
+  echo "Killing Telnet"
+  ufw deny telnet 
+  ufw deny rtelnet 
+  ufw deny telnets
+  apt-get purge telnet -y -qq
+  apt-get purge telnetd -y -qq
+  apt-get purge inetutils-telnetd -y -qq
+  apt-get purge telnetd-ssl -y -qq
+  echo "Telnet port has been denied on the firewall and Telnet has been   removed."
 else
-echo "RESPONSE NOT RECOGNIZED FOR telnet"
+  echo "RESPONSE NOT RECOGNIZED FOR telnet"
 fi
 if [ $mailYN == Y ]
 then
-echo "STILL NEED TO DO THIS"
+  echo "STILL NEED TO DO THIS"
 elif [ $mailYN == N ]
 then
-echo "Killing mail"
-ufw deny smtp 
-ufw deny pop2 
-ufw deny pop3
-ufw deny imap2 
-ufw deny imaps 
-ufw deny pop3s
-echo "smtp, pop2, pop3, imap2, imaps, and pop3s ports have been denied on the firewall."
+  echo "Killing mail"
+  ufw deny smtp 
+  ufw deny pop2 
+  ufw deny pop3
+  ufw deny imap2 
+  ufw deny imaps 
+  ufw deny pop3s
+  echo "smtp, pop2, pop3, imap2, imaps, and pop3s ports have been denied on  the firewall."
 else
 echo "RESPONSE NOT RECOGNIZED FOR mail"
 fi
 if [ $printYN == Y ]
 then
-echo "STILL NEED TO DO THIS"
+  echo "STILL NEED TO DO THIS"
 elif [ $printYN == N ]
 then
-echo "Killing print"
-ufw deny ipp 
-ufw deny printer 
-ufw deny cups
-echo "ipp, printer, and cups ports have been denied on the firewall."
+  echo "Killing print"
+  ufw deny ipp 
+  ufw deny printer 
+  ufw deny cups
+  echo "ipp, printer, and cups ports have been denied on the firewall."
 else
 echo "RESPONSE NOT RECOGNIZED FOR print"
 fi
 if [ $mysqlYN == Y ]
 then
-echo "STILL NEED TO DO THIS"
+  service mysql start
+  echo "In the mysql terminal, run the following commands"
+  echo "mysql > select host, user, password from user;"
+  echo "Then Change as necessary, to change the password do: mysql > update user set password=password('T3@m_C7Ickb@it') where user='USERNAME'; "
+  echo "Then do look at the grants for each user: mysql > show grants for 'USERNAME'; "
+  echo "Then edit as necessary: mysql > revoke 'PERMISSION' on 'DATABASE(* for all)'.'TABLE(* for all)' from 'USERNAME'; to remove privileges"
+  echo "To add privileges do: mysql > grant 'PERMISSION' on 'DATABASE(* for all)'.'TABLE(* for all)' to 'USERNAME'; "
+  echo "Type in the password for the root account below"
+  mysql -u root -p mysql
+  read -p "If there was an error, try to find another way to get into mysql as root before continuing the script"
+  echo "STILL NEED TO ADD"
 elif [ $mysqlYN == N ]
 then
-echo "Killing mysql"
-ufw deny ms-sql-s 
-ufw deny ms-sql-m 
-ufw deny mysql 
-ufw deny mysql-proxy
-apt-get purge mysql -y -qq
-apt-get purge mysql-client-core-5.5 -y -qq
-apt-get purge mysql-client-core-5.6 -y -qq
-apt-get purge mysql-common-5.5 -y -qq
-apt-get purge mysql-common-5.6 -y -qq
-apt-get purge mysql-server -y -qq
-apt-get purge mysql-server-5.5 -y -qq
-apt-get purge mysql-server-5.6 -y -qq
-apt-get purge mysql-client-5.5 -y -qq
-apt-get purge mysql-client-5.6 -y -qq
-apt-get purge mysql-server-core-5.6 -y -qq
-echo "ms-sql-s, ms-sql-m, mysql, and mysql-proxy ports have been denied on the firewall. MySQL has been removed."
+  echo "Killing mysql"
+  ufw deny ms-sql-s 
+  ufw deny ms-sql-m 
+  ufw deny mysql 
+  ufw deny mysql-proxy
+  apt-get purge mysql -y -qq
+  apt-get purge mysql-client-core-5.5 -y -qq
+  apt-get purge mysql-client-core-5.6 -y -qq
+  apt-get purge mysql-common-5.5 -y -qq
+  apt-get purge mysql-common-5.6 -y -qq
+  apt-get purge mysql-server -y -qq
+  apt-get purge mysql-server-5.5 -y -qq
+  apt-get purge mysql-server-5.6 -y -qq
+  apt-get purge mysql-client-5.5 -y -qq
+  apt-get purge mysql-client-5.6 -y -qq
+  apt-get purge mysql-server-core-5.6 -y -qq
+  echo "ms-sql-s, ms-sql-m, mysql, and mysql-proxy ports have been denied on the firewall. MySQL has been removed."
 else
-echo "RESPONSE NOT RECOGNIZED FOR sql"
+  echo "RESPONSE NOT RECOGNIZED FOR sql"
 fi
 if [ $httpYN == Y ]
 then
-echo "Getting apach2 and updating"
-apt-get purge apache2 -y -qq
-apt-get install apache2 -y -qq
-ufw allow http 
-ufw allow https
+  echo "Getting apach2 and updating"
+  apt-get purge apache2 -y -qq
+  apt-get install apache2 -y -qq
+  ufw allow http 
+  ufw allow https
 elif [ $httpYN == N ]
 then
-echo "Killing http and https and apache2"
-ufw deny http
-ufw deny https
-apt-get purge apache2 -y -qq
-rm -r /var/www/*
-echo "http and https ports have been denied on the firewall. Apache2 has been removed. Web server files have been removed."
+  echo "Killing http and https and apache2"
+  ufw deny http
+  ufw deny https
+  apt-get purge apache2 -y -qq
+  rm -r /var/www/*
+  echo "http and https ports have been denied on the firewall. Apache2 has been removed. Web server files have been removed."
 else
-echo "RESPONSE NOT RECOGNIZED FOR web server"
+  echo "RESPONSE NOT RECOGNIZED FOR web server"
 fi
 if [ $dnsYN == Y ]
 then
-echo "STILL NEED TO DO THIS"
+  echo "STILL NEED TO DO THIS"
 elif [ $dnsYN == N ]
 then
-echo "Killing dns"
-ufw deny domain
-apt-get purge bind9 -qq
-echo "domain port has been denied on the firewall. DNS name binding has been removed."
+  echo "Killing dns"
+  ufw deny domain
+  apt-get purge bind9 -qq
+  echo "domain port has been denied on the firewall. DNS name binding has been removed."
 else
-echo "RESPONSE NOT RECOGNIZED FOR dns"
+  echo "RESPONSE NOT RECOGNIZED FOR dns"
 fi
 
-echo "Making updates"
-apt upgrade -qq
-apt update -qq
-apt upgrade -qq
+apt-get install firefox
+read -p "Config firefox: https://www.youtube.com/watch?v=JVxkTqLoyGY, find the firefox config part, also in the description"
 
-echo "AutoRemoving"
-apt autoremove -y -qq
-apt autoclean -y -qq
+echo "Configuring pam files"
+echo "Configuring common-password"
+cp /etc/pam.d/common-password ~/Desktop/backups
+apt-get install libpam-cracklib
+configCommonPassword="File='/etc/pam.d/common-password' try: ||f=open(File) except: ||File=input('What|is|the|file|path|for|common-password|in|pam.d?|') ||f=open(File) d=f.read().split('\n') f.close()  fixedtext='' for|i|in|d: ||if|'pam_unix.so'|in|i: ||||i+='|remember=5|minlen=8' ||||print(i) ||||tmp=input('Is|this|correct,|type|Y|if|it|is,|type|the|correct|line|if|not?|') ||||if|tmp!='Y': ||||||i=tmp ||if|'pam_cracklib.so'|in|i: ||||i+='|ucredit=-1|lcredit=-1|dcredit=-1|ocredit=-1' ||||print(i) ||||tmp=input('Is|this|correct,|type|Y|if|it|is,|type|the|correct|line|if|not?|') ||||if|tmp!='Y': ||||||i=tmp ||fixedtext+=i+'\n'  f=open(File,'w') f.write(fixedtext) f.close()"
+echo '' > commonpasswordconfig.py
+for i in $scriptsysctlconfig; do i=$( tr '|' ' ' <<<"$i" ); echo "$i" >> commonpasswordconfig.py; done
+python3 commonpasswordconfig.py
 
-echo "Check the settings of updates"
-echo "Instead of clicking update, click settings"
-update-manager
+echo "Editting common-auth"
+cp /etc/pam.d/common-auth ~/Desktop/backups
+echo "auth required pam_tally2.so deny=5 onerr=fail unlock_time=1800" >> /etc/pam.d/common-auth
 
-read -p "Waiting for update settings to be fixed"
+echo "Getting bum, a software that can show what softwares start at startup, might not be able to get"
+apt-get install bum
+bum
 
-apt upgrade
-apt update
+echo "Disabling guest account"
+cp /etc/lightdm/lightdm.conf ~/Desktop/backups
+echo "allow-guest=false" >> /etc/lightdm/lightdm.conf
 
-read -p "Fix lightdm"
+echo "Setting up audits"
+apt-get install auditd
+auditctl –e 1
+gedit /etc/audit/auditd.conf
+read -p "Waiting for configuration to be finished in auditd.conf"
 
-echo "Creating filetimereader.py and readthedata.py"
-echo "JK create it yourself"
-read -p "Create filetimereader.py and readthedata.py"
-
-echo "The script is done"
