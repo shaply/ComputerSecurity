@@ -267,7 +267,7 @@ apt autoremove -y -qq
 apt autoclean -y -qq
 
 echo "Writing script to fix sysctl.conf"
-scriptsysctlconfig="import|os #open|/etc/sysctl.conf|and|read File='/etc/sysctl.conf' try: ||f=open(File) ||text=f.read() ||f.close() except: ||File=input('what|is|the|file|path|for|sysctl?|') ||f=open(File) ||text=f.read().split('\n') ||f.close() #Make|configs|with|pre|knowledge configs=['kernel.randomize_va_space','net.ipv4.ip_forward','net.ipv4.conf.all.rp_filter','net.ipv4.tcp_syncookies','net.ipv4.icmp_echo_ignore_broadcasts','net.ipv4.conf.all.log_martians'] fixes=['1','0','1','1','1','1'] fixedtxt=text for|i|in|range(len(configs)): ||if|configs[i]|in|'sysctlconfigs.txt': ||||fixedtxt+='\n'+configs[i]+'='+fixes[i] ||||os.system('sysctl|'+configs[i]+'='+fixes[i]) ||else: ||||tmpconfig=input(configs[i]|+|'|was|not|a|configuration|for|sysctl,|check|what|is|wrong|and|type|the|correct|configuration|name,|if|it|doesnt|exist,|type|N:|') ||||tmpfixed=input('What|is|the|correct|variable|for|it:|') ||||if|tmpconfig=='N'|or|tmpfixed=='N': ||||||continue ||||else: ||||||fixedtxt+='\n'+tmpconfig+'='+tmpfixed ||||||os.system('sysctl|'+tmpconfig+'='+tmpfixed) #Making|configs|with|search|in|terminal  #Write|configs|in|/etc/sysctl.conf f=open('/etc/sysctl.conf') f.write(fixedtxt) f.close()"
+scriptsysctlconfig='import|os #open|/etc/sysctl.conf|and|read File="/home/dave/Desktop/CyberPatriot/scripts/test.txt" try: ||f=open(File) ||text=f.read() ||f.close() except: ||File=input("what|is|the|file|path|for|sysctl?|") ||f=open(File) ||text=f.read().split("\n") ||f.close() #Make|configs os.system("echo|$(|sysctl|-a|)|>|sysctlconfigs.txt") f=open("sysctlconfigs.txt") configstxt=f.read() f.close()  configs=["kernel.randomize_va_space","net.ipv4.ip_forward","net.ipv4.conf.all.rp_filter","net.ipv4.tcp_syncookies","net.ipv4.icmp_echo_ignore_broadcasts","net.ipv4.conf.all.log_martians"] fixes=["1","0","1","1","1","1"] fixedtxt=text for|i|in|range(len(configs)): ||if|configs[i]|in|configstxt: ||||fixedtxt+="\n"+configs[i]+"="+fixes[i] ||||os.system("sysctl|"+configs[i]+"="+fixes[i]) ||else: ||||tmpconfig=input(configs[i]|+|"|was|not|a|configuration|for|sysctl,|check|what|is|wrong|and|type|the|correct|configuration|name,|if|it|doesnt|exist,|type|N:|") ||||tmpfixed=input("What|is|the|correct|variable|for|it:|") ||||if|tmpconfig=="N"|or|tmpfixed=="N": ||||||continue ||||else: ||||||fixedtxt+="\n"+tmpconfig+"="+tmpfixed ||||||os.system("sysctl|"+tmpconfig+"="+tmpfixed) #Making|configs|with|search|in|terminal #Write|configs|in|/etc/sysctl.conf f=open(File,|"w") f.write(fixedtxt) f.close()'
 #Replaces | with a ' ' and every space in the string is a newline in the file
 echo '' > sysctlconf.py
 for i in $scriptsysctlconfig; do i=$( tr '|' ' ' <<<"$i" ); echo "$i" >> sysctlconf.py; done
@@ -290,8 +290,8 @@ echo Does this machine need Printing?
 read printYN
 echo Does this machine need MySQL?
 read mysqlYN
-echo Will this machine be a Web Server meaning apache2 is included in the PC?
-read httpYN
+echo Will this machine need apache2?
+read apacheYN
 echo Does this machine need DNS?
 read dnsYN
 
@@ -440,14 +440,25 @@ then
 else
   echo "RESPONSE NOT RECOGNIZED FOR sql"
 fi
-if [ $httpYN == Y ]
+if [ $apacheYN == Y ]
 then
-  echo "Getting apach2 and updating"
-  apt-get purge apache2 -y -qq
+  echo "Getting apache2 and updating"
   apt-get install apache2 -y -qq
   ufw allow http 
   ufw allow https
-elif [ $httpYN == N ]
+  echo "Check all the .conf files first"
+  for i in $( find /etc/apache2 -name "*.conf" | grep "enabled" ); do echo $( ls -l $i ); done
+  echo $( ls -l /etc/apache2 | grep ".conf" )
+  read -p "Make sure the configuration files are good, make sure the ports are 80 for http or usually 443 for https"
+  echo "Check the /etc/apache2/sites-enabled/ for any bad sites"
+  ls -l /etc/apache2/sites-enabled/
+  read -p "The directory the sites should look to should be /var/www/ otherwise look into it"
+  echo "Check the code of the html pages of the site"
+  ls -l /var/www/*
+  read -p "Make sure they are all clean"
+  echo "Visit the website"
+  read -p "Have you made sure the website of the computer is good?" 
+elif [ $apacheYN == N ]
 then
   echo "Killing http and https and apache2"
   ufw deny http
