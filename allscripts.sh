@@ -491,7 +491,7 @@ cp /etc/pam.d/common-password ~/Desktop/backups
 apt-get install libpam-cracklib
 configCommonPassword="File='/etc/pam.d/common-password' try: ||f=open(File) except: ||File=input('What|is|the|file|path|for|common-password|in|pam.d?|') ||f=open(File) d=f.read().split('\n') f.close()  fixedtext='' for|i|in|d: ||if|'pam_unix.so'|in|i: ||||i+='|remember=5|minlen=8' ||||print(i) ||||tmp=input('Is|this|correct,|type|Y|if|it|is,|type|the|correct|line|if|not?|') ||||if|tmp!='Y': ||||||i=tmp ||if|'pam_cracklib.so'|in|i: ||||i+='|ucredit=-1|lcredit=-1|dcredit=-1|ocredit=-1' ||||print(i) ||||tmp=input('Is|this|correct,|type|Y|if|it|is,|type|the|correct|line|if|not?|') ||||if|tmp!='Y': ||||||i=tmp ||fixedtext+=i+'\n'  f=open(File,'w') f.write(fixedtext) f.close()"
 echo '' > commonpasswordconfig.py
-for i in $commonpasswordconfig.py; do i=$( tr '|' ' ' <<<"$i" ); echo "$i" >> commonpasswordconfig.py; done
+for i in $configCommonPassword do i=$( tr '|' ' ' <<<"$i" ); echo "$i" >> commonpasswordconfig.py; done
 python3 commonpasswordconfig.py
 
 echo "Editting common-auth"
