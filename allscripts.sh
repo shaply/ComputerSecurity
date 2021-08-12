@@ -40,17 +40,16 @@ apt-get install python3
 read -p "Make sure python3, sed, and vim work, if not manually download"
 
 echo "Changing the Passwords for every user to T3@m_C7Ickb@it"
-USERS=$(getent passwd {1000..6000} | cut -d: -f1)
+USERS=$( getent passwd {1000..6000} | cut -d: -f1 )
 apt install whois
-EncryptedPassword=$(mkpasswd -m sha-512 T3@m_C7Ickb@it)
+EncryptedPassword=$( mkpasswd -m sha-512 T3@m_C7Ickb@it )
 for USER in $USERS; do
   usermod -p $EncryptedPassword $USER
-  passwd -x30 -n3 -w7 ${users[${i}]}
-  echo "${users[${i}]}'s password has been given a maximum age of 30 days, minimum of 3 days, and warning of 7 days. ${users[${i}]}'s account has b
-een locked." ;
+  passwd -x30 -n3 -w7 $USER
+  echo "$USER's password has been given a maximum age of 30 days, minimum of 3 days, and warning of 7 days." ;
 done
 
-echo "Do you need to add a user, if so type the users account name, other wise type N"
+echo "*** Do you need to add a user, if so type the users account name, other wise type N ***"
 read userYN
 while [ $userYN != N ]
 do adduser $userYN
@@ -91,84 +90,84 @@ else
 fi
 
 echo "Finding All media files, putting in media file: ~/Desktop/mediafiles.txt"
-find / -name "*.midi" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.mid" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.mod" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.mp3" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.mp2" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.mpa" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.abs" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.mpega" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.au" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.snd" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.wav" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.aiff" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.aif" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.sid" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.flac" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.ogg" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.mpeg" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.mpg" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.mpe" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.dl" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.movie" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.movi" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.mv" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.iff" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.anim5" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.anim3" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.anim7" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.avi" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.vfw" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.avx" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.fli" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.flc" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.mov" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.qt" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.spl" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.swf" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.dcr" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.dir" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.dxr" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.rpm" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.rm" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.smi" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.ra" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.ram" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.rv" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.wmv" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.asf" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.asx" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.wma" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.wax" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.wmv" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.wmx" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.3gp" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.mov" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.mp4" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.avi" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.swf" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.flv" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.m4v" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.tiff" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.tif" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.rs" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.im1" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.gif" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.jpeg" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.jpg" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.jpe" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.png" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.rgb" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.xwd" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.xpm" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.ppm" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.pbm" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.pgm" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.pcx" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.ico" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.svg" -type f >> ~/Desktop/mediafiles.txt
-find / -name "*.svgz" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.midi" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.mid" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.mod" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.mp3" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.mp2" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.mpa" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.abs" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.mpega" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.au" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.snd" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.wav" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.aiff" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.aif" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.sid" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.flac" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.ogg" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.mpeg" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.mpg" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.mpe" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.dl" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.movie" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.movi" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.mv" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.iff" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.anim5" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.anim3" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.anim7" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.avi" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.vfw" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.avx" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.fli" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.flc" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.mov" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.qt" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.spl" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.swf" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.dcr" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.dir" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.dxr" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.rpm" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.rm" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.smi" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.ra" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.ram" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.rv" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.wmv" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.asf" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.asx" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.wma" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.wax" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.wmv" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.wmx" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.3gp" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.mov" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.mp4" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.avi" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.swf" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.flv" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.m4v" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.tiff" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.tif" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.rs" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.im1" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.gif" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.jpeg" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.jpg" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.jpe" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.png" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.rgb" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.xwd" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.xpm" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.ppm" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.pbm" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.pgm" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.pcx" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.ico" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.svg" -type f >> ~/Desktop/mediafiles.txt
+find ~/.. -name "*.svgz" -type f >> ~/Desktop/mediafiles.txt
 read -p "Waiting for media file clearance"
 
 echo "Finding php files php files are service files"
@@ -189,6 +188,10 @@ echo $( find /bin/ -name "*.sh" -type f ) >> ~/Desktop/scriptsInBin.txt
 read -p "Look at scriptsInBin.txt"
 find /bin/ -name "*.sh" -type f -delete
 echo "Scripts in bin have been removed."
+
+echo $( find ~/.. -name "*.sh" -type f ) >> ~/Desktop/scriptsInUsers.txt
+read -p "Look at scriptsInUsers.txt"
+read -p "Check if some should be removed"
 
 cp /etc/rc.local ~/Desktop/backups/
 echo > /etc/rc.local
@@ -217,7 +220,7 @@ apt-get install clamav
 clamscan -r -i
 read -p "Read for vulnerabilities"
 
-read -p "Do you still need hacking tools?"
+read -p "Do you still need hacking tools? After enter, hacking tools will be removed"
 echo "Removing Netcat"
 apt-get purge netcat -y -qq
 apt-get purge netcat-openbsd -y -qq
@@ -255,6 +258,8 @@ apt-get purge sipcrack -y -qq
 echo "SipCrack has been removed."
 apt-get purge irpas -y -qq
 echo "IRPAS has been removed."
+apt-get purge zenmap nmap -y -qq
+echo "Zenmap and nmap has been removed."
 echo 'Are there any hacking tools shown? (not counting libcrack2:amd64 or cracklib-runtime)'
 dpkg -l | egrep "crack|hack" >> ~/Desktop/Script.log
 apt-get purge logkeys -y -qq
@@ -275,7 +280,7 @@ apt autoremove -y -qq
 apt autoclean -y -qq
 
 echo "Writing script to fix sysctl.conf"
-scriptsysctlconfig='import|os #open|/etc/sysctl.conf|and|read File="/home/dave/Desktop/CyberPatriot/scripts/test.txt" try: ||f=open(File) ||text=f.read() ||f.close() except: ||File=input("what|is|the|file|path|for|sysctl?|") ||f=open(File) ||text=f.read().split("\n") ||f.close() #Make|configs os.system("echo|$(|sysctl|-a|)|>|sysctlconfigs.txt") f=open("sysctlconfigs.txt") configstxt=f.read() f.close()  configs=["kernel.randomize_va_space","net.ipv4.ip_forward","net.ipv4.conf.all.rp_filter","net.ipv4.tcp_syncookies","net.ipv4.icmp_echo_ignore_broadcasts","net.ipv4.conf.all.log_martians"] fixes=["1","0","1","1","1","1"] fixedtxt=text for|i|in|range(len(configs)): ||if|configs[i]|in|configstxt: ||||fixedtxt+="\n"+configs[i]+"="+fixes[i] ||||os.system("sysctl|"+configs[i]+"="+fixes[i]) ||else: ||||tmpconfig=input(configs[i]|+|"|was|not|a|configuration|for|sysctl,|check|what|is|wrong|and|type|the|correct|configuration|name,|if|it|doesnt|exist,|type|N:|") ||||tmpfixed=input("What|is|the|correct|variable|for|it:|") ||||if|tmpconfig=="N"|or|tmpfixed=="N": ||||||continue ||||else: ||||||fixedtxt+="\n"+tmpconfig+"="+tmpfixed ||||||os.system("sysctl|"+tmpconfig+"="+tmpfixed) #Making|configs|with|search|in|terminal #Write|configs|in|/etc/sysctl.conf f=open(File,|"w") f.write(fixedtxt) f.close()'
+scriptsysctlconfig='import|os #open|/etc/sysctl.conf|and|read File="/etc/sysctl.conf" try: ||f=open(File) ||text=f.read() ||f.close() except: ||File=input("what|is|the|file|path|for|sysctl?|") ||f=open(File) ||text=f.read() ||f.close() #Make|configs os.system("echo|$(|sysctl|-a|)|>|sysctlconfigs.txt") f=open("sysctlconfigs.txt") configstxt=f.read() f.close()  configs=["kernel.randomize_va_space","net.ipv4.ip_forward","net.ipv4.conf.all.rp_filter","net.ipv4.tcp_syncookies","net.ipv4.icmp_echo_ignore_broadcasts","net.ipv4.conf.all.log_martians"] fixes=["1","0","1","1","1","1"] fixedtxt=text for|i|in|range(len(configs)): ||if|configs[i]|in|configstxt: ||||fixedtxt+="\n"+configs[i]+"="+fixes[i] ||||os.system("sysctl|"+configs[i]+"="+fixes[i]) ||else: ||||tmpconfig=input(configs[i]|+|"|was|not|a|configuration|for|sysctl,|check|what|is|wrong|and|type|the|correct|configuration|name,|if|it|doesnt|exist,|type|N:|") ||||tmpfixed=input("What|is|the|correct|variable|for|it:|") ||||if|tmpconfig=="N"|or|tmpfixed=="N": ||||||continue ||||else: ||||||fixedtxt+="\n"+tmpconfig+"="+tmpfixed ||||||os.system("sysctl|"+tmpconfig+"="+tmpfixed) #Making|configs|with|search|in|terminal #Write|configs|in|/etc/sysctl.conf f=open(File,|"w") f.write(fixedtxt) f.close()'
 #Replaces | with a ' ' and every space in the string is a newline in the file
 echo '' > sysctlconf.py
 for i in $scriptsysctlconfig; do i=$( tr '|' ' ' <<<"$i" ); echo "$i" >> sysctlconf.py; done
@@ -345,7 +350,8 @@ then
   apt-get install openssh-server -y -qq
   ufw allow ssh
   #sshconfig file is backed up by the python program. Dont worry
-  sshconfig="#Open|and|read|the|config|file|for|ssh File='/etc/ssh/sshd_config' try: ||f|=|open(File) except: ||File|=|input('What|is|the|ssh|configuration|file?|File|path|included:|') ||f|=|open(File) d=f.read() #Backing|up|the|config|file w=open('backups/sshconfig.txt','w') w.write(d) w.close() text=d.split('\n') #Start|Fixing configs=['AllowTcpForwarding','Protocol','X11Forwarding','PasswordAuthentication','PermitRootLogin','RSAAuthentication','PubkeyAuthentication'] fixes=['no','2','no','no','no','yes','yes'] fixedtxt='' for|i|in|text: ||for|j|in|range(len(configs)): ||||if|configs[j]|in|i: ||||||x=i.split('|') ||||||tmp='' ||||||for|k|in|x: ||||||||if|k==configs[j]: ||||||||||tmp+=k ||||||||||break ||||||||tmp+=k+'|' ||||||i=tmp+'|'+fixes[j] ||||||break ||fixedtxt+=i+'\n' fixedtxt+='\n' print(configs,|fixes) for|i|in|range(len(configs)): ||if|configs[i]!='': ||||fixedtxt+=configs[i]+'|'+fixes[i]+'\n' #Write|configs f=open(File,'w') f.write(fixedtxt) f.close()"
+  sshconfig="#Open|and|read|the|config|file|for|ssh File='/etc/ssh/sshd_config' try: ||f|=|open(File) except: ||File|=|input('What|is|the|ssh|configuration|file?|File|path|included:|') ||f|=|open(File) d=f.read() f.close() #Backing|up|the|config|file w=open('backups/sshconfig.txt','w') w.write(d) w.close() text=d.split('\n') #Start|Fixing configs=['AllowTcpForwarding','Protocol','X11Forwarding','PasswordAuthentication','PermitRootLogin','RSAAuthentication','PubkeyAuthentication'] fixes=['no','2','no','no','no','yes','yes'] fixedtxt='' for|i|in|text: ||for|j|in|range(len(configs)): ||||if|configs[j]|in|i: ||||||x=i.split('|') ||||||tmp='' ||||||for|k|in|x: ||||||||if|k==configs[j]: ||||||||||tmp+=k ||||||||||break ||||||||tmp+=k+'|' ||||||i=tmp+'|'+fixes[j] ||||||break ||fixedtxt+=i+'\n' fixedtxt+='\n' print(configs,|fixes) for|i|in|range(len(configs)): ||if|configs[i]!='': ||||fixedtxt+=configs[i]+'|'+fixes[i]+'\n' #Write|configs f=open(File,'w') f.write(fixedtxt) f.close()"
+  read -p "Check /etc/ssh/ssh_config (If it exists) as well and change the settings according to what was changed in /etc/ssh/sshd_config by script"
   echo '' > sshconfig.py
   for i in $sshconfig; do i=$( tr '|' ' ' <<<"$i" ); echo "$i" >> sshconfig.py; done
   python3 sshconfig.py
@@ -353,7 +359,6 @@ then
   service ssh restart
   mkdir ~/.ssh
   chmod 700 ~/.ssh
-  ssh-keygen -t rsa
   echo "Fixed ssh"
 elif [ $sshYN == N ]
 then
@@ -475,3 +480,6 @@ then
 else
   echo "RESPONSE NOT RECOGNIZED FOR dns"
 fi
+
+read -p "*** Edit firefox settings as well. Video of what to do **(Skip to 6:45)**: https://www.youtube.com/watch?v=JVxkTqLoyGY ***"
+echo "Finally, do the time reader stuff and good luck!"
