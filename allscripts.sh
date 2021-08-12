@@ -11,7 +11,7 @@ mkdir -p ~/Desktop/backups
 chmod 777 ~/Desktop/backups
 
 echo "Editting login.defs"
-cp login.defs ~/Desktop/backups/
+cp /etc/login.defs ~/Desktop/backups/
 nums='160 161 162 163 279 151 167 168 42 50 61 62'
 for i in $nums; do sed -n $( echo $i )p /etc/login.defs; done
 read -p 'Make sure all the lines are correct'
@@ -73,8 +73,13 @@ do adduser $userYN
   read userYN
 done
 
-read -p "Make sure you have created PCusers.txt with all the users copied in it"
-read -p "I REPEAT MAKE THE FILE PCusers.txt with the users copied in it"
+scraper="import|urllib.request with|open('README.desktop')|as|file: ||d=file.read() d=d.split('\n') for|row|in|d: ||if|'https'|in|row: ||||s=row.split('https') ||||webUrl='https'+s[1][:-1] webUrl=urllib.request.urlopen(webUrl) data=webUrl.read().decode('UTF-8') data=data.split('\n') Gstuff=[] a=False for|row|in|data: ||if|a|and|'pre>'|not|in|row: ||||Gstuff.append(row) ||if|'pre>'|in|row: ||||if|a: ||||||break ||||else: ||||||a=True f=open('PCusers.txt',|'w') for|row|in|Gstuff: ||f.write(row) f.close()"
+echo '' > scrapeREADME.py
+for i in $scraper; do i=$( tr '|' ' ' <<<"$i" ); echo "$i" >> scrapeREADME.py; done
+python3 scrapeREADME.py
+read -p "Make sure the PCusers.txt file is correct/good"
+read -p "I REPEAT MAKE SURE PCusers.txt file is good"
+
 cp /etc/group ~/Desktop/backups/
 userReader="with|open('PCusers.txt')|as|file: ||allLines=file.read().split('\n') ||admins=[] ||users=[] ||which='administrators'  ||for|row|in|allLines: ||||if|'password'|not|in|row.lower(): ||||||||if|'users'|in|row.lower(): ||||||||||which='users' ||||||||if|which|==|'administrators': ||||||||||if|'|'|in|row: ||||||||||||row=row.split()[0] ||||||||||admins.append(row) ||||||||if|which=='users': ||||||||||users.append(row) ||allusers=admins+users  ||#Doesn't|delete|users|from|sudo|group|yet ||import|os ||os.chdir('/home') ||allUser=os.listdir() ||for|user|in|allUser: ||||if|user|not|in|allusers: ||||||os.system('userdel|%s'%(user))  with|open('/etc/group')|as|file: ||d|=|file.readline() ||while|'sudo'|not|in|d: ||||d=file.readline()  print('users',|users) d=d[:-1] splitted=d.split(':') usersInSudo=splitted[3].split(',') print(usersInSudo) for|user|in|usersInSudo: ||if|user|in|users: ||||os.system('gpasswd|-d|%s|sudo'%(user)) ||||pass"
 echo '' > userReader.py
@@ -351,6 +356,8 @@ then
   ufw allow ssh
   #sshconfig file is backed up by the python program. Dont worry
   sshconfig="#Open|and|read|the|config|file|for|ssh File='/etc/ssh/sshd_config' try: ||f|=|open(File) except: ||File|=|input('What|is|the|ssh|configuration|file?|File|path|included:|') ||f|=|open(File) d=f.read() f.close() #Backing|up|the|config|file w=open('backups/sshconfig.txt','w') w.write(d) w.close() text=d.split('\n') #Start|Fixing configs=['AllowTcpForwarding','Protocol','X11Forwarding','PasswordAuthentication','PermitRootLogin','RSAAuthentication','PubkeyAuthentication'] fixes=['no','2','no','no','no','yes','yes'] fixedtxt='' for|i|in|text: ||for|j|in|range(len(configs)): ||||if|configs[j]|in|i: ||||||x=i.split('|') ||||||tmp='' ||||||for|k|in|x: ||||||||if|k==configs[j]: ||||||||||tmp+=k ||||||||||break ||||||||tmp+=k+'|' ||||||i=tmp+'|'+fixes[j] ||||||break ||fixedtxt+=i+'\n' fixedtxt+='\n' print(configs,|fixes) for|i|in|range(len(configs)): ||if|configs[i]!='': ||||fixedtxt+=configs[i]+'|'+fixes[i]+'\n' #Write|configs f=open(File,'w') f.write(fixedtxt) f.close()"
+  /usr/sbin/sshd -T
+  read -p "Just printed a think that will tell if there is any bad lines in the config file, make sure to delete accordingly"
   read -p "Check /etc/ssh/ssh_config (If it exists) as well and change the settings according to what was changed in /etc/ssh/sshd_config by script"
   echo '' > sshconfig.py
   for i in $sshconfig; do i=$( tr '|' ' ' <<<"$i" ); echo "$i" >> sshconfig.py; done
