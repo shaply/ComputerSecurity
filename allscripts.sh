@@ -11,7 +11,7 @@ mkdir -p ~/Desktop/backups
 chmod 777 ~/Desktop/backups
 
 echo "Editting login.defs"
-cp /etc/login.defs ~/Desktop/backups/
+cp login.defs ~/Desktop/backups/
 nums='160 161 162 163 279 151 167 168 42 50 61 62'
 for i in $nums; do sed -n $( echo $i )p /etc/login.defs; done
 read -p 'Make sure all the lines are correct'
@@ -185,6 +185,8 @@ echo "Read/Write permissions on shadow have been set."
 chmod 640 .bash_history
 echo "Bash history file permissions set .bash_history"
 
+echo $( find /bin/ -name "*.sh" -type f ) >> ~/Desktop/scriptsInBin.txt
+read -p "Look at scriptsInBin.txt"
 find /bin/ -name "*.sh" -type f -delete
 echo "Scripts in bin have been removed."
 
@@ -192,6 +194,11 @@ cp /etc/rc.local ~/Desktop/backups/
 echo > /etc/rc.local
 echo 'exit 0' >> /etc/rc.local
 echo "Any startup scripts have been removed."
+
+cp /etc/lightdm/lightdm.conf ~/Desktop/backups
+echo "allow-guest=false" >> /etc/lightdm/lightdm.conf
+echo "Turned guest off for lightdm"
+read -p "Check to make sure allow-guest=false is in /etc/lightdm/lightdm.conf"
 
 apt-get install ufw -y -qq
 ufw enable
@@ -210,6 +217,7 @@ apt-get install clamav
 clamscan -r -i
 read -p "Read for vulnerabilities"
 
+read -p "Do you still need hacking tools?"
 echo "Removing Netcat"
 apt-get purge netcat -y -qq
 apt-get purge netcat-openbsd -y -qq
@@ -301,10 +309,6 @@ then
   echo "STILL NEED TO DO THIS"
 elif [ $sambaYN == N ]
 then
-  echo "Killing Samba"
-  ufw deny netbios-ns
-  ufw deny netbios-dgm
-  ufw deny netbios-ssn
   ufw deny microsoft-ds
   apt-get purge samba -y -qq
   apt-get purge samba-common -y  -qq
@@ -341,10 +345,11 @@ then
   apt-get install openssh-server -y -qq
   ufw allow ssh
   #sshconfig file is backed up by the python program. Dont worry
-  sshconfig="#Open|and|read|the|config|file|for|ssh File='/etc/ssh/  sshd_config' try: ||f|=|open('/etc/ssh/sshd_config') except: ||File|=|input('What|is|the|ssh|configuration|file?|File|path|included:|') ||f|=|open(File) d=f.read() #Backing|up|the|config|file w=open('backups/sshconfig.txt','w') w.write(d) w.close() text=d.split('\n') #Start|Fixing configs=['AllowTcpForwarding','Protocol','X11Forwarding','PasswordAuthentication','PermitRootLogin','RSAAuthentication','PubkeyAuthentication'] fixes=['no','2','no','no','no','yes','yes'] fixedtxt='' for|i|in|text: ||for|j|in|range(len(configs)): ||||if|configs[j]|in|i: ||||||x=i.split('|') ||||||x[1]=fixes[j] ||||||i=x[0]+'|'+fixes[j] ||||||break ||fixedtxt+=i+'\n' #Write|configs f=open(File,'w') f.write(fixedtxt) f.close()"
+  sshconfig="#Open|and|read|the|config|file|for|ssh File='/etc/ssh/sshd_config' try: ||f|=|open(File) except: ||File|=|input('What|is|the|ssh|configuration|file?|File|path|included:|') ||f|=|open(File) d=f.read() #Backing|up|the|config|file w=open('backups/sshconfig.txt','w') w.write(d) w.close() text=d.split('\n') #Start|Fixing configs=['AllowTcpForwarding','Protocol','X11Forwarding','PasswordAuthentication','PermitRootLogin','RSAAuthentication','PubkeyAuthentication'] fixes=['no','2','no','no','no','yes','yes'] fixedtxt='' for|i|in|text: ||for|j|in|range(len(configs)): ||||if|configs[j]|in|i: ||||||x=i.split('|') ||||||tmp='' ||||||for|k|in|x: ||||||||if|k==configs[j]: ||||||||||tmp+=k ||||||||||break ||||||||tmp+=k+'|' ||||||i=tmp+'|'+fixes[j] ||||||break ||fixedtxt+=i+'\n' fixedtxt+='\n' print(configs,|fixes) for|i|in|range(len(configs)): ||if|configs[i]!='': ||||fixedtxt+=configs[i]+'|'+fixes[i]+'\n' #Write|configs f=open(File,'w') f.write(fixedtxt) f.close()"
   echo '' > sshconfig.py
   for i in $sshconfig; do i=$( tr '|' ' ' <<<"$i" ); echo "$i" >> sshconfig.py; done
   python3 sshconfig.py
+  read -p "Check /etc/ssh/sshd_config to make sure the correct settings were added (Just check the script code)"
   service ssh restart
   mkdir ~/.ssh
   chmod 700 ~/.ssh
@@ -440,25 +445,14 @@ then
 else
   echo "RESPONSE NOT RECOGNIZED FOR sql"
 fi
-if [ $apacheYN == Y ]
+if [ $httpYN == Y ]
 then
-  echo "Getting apache2 and updating"
+  echo "Getting apach2 and updating"
+  apt-get purge apache2 -y -qq
   apt-get install apache2 -y -qq
   ufw allow http 
   ufw allow https
-  echo "Check all the .conf files first"
-  for i in $( find /etc/apache2 -name "*.conf" | grep "enabled" ); do echo $( ls -l $i ); done
-  echo $( ls -l /etc/apache2 | grep ".conf" )
-  read -p "Make sure the configuration files are good, make sure the ports are 80 for http or usually 443 for https"
-  echo "Check the /etc/apache2/sites-enabled/ for any bad sites"
-  ls -l /etc/apache2/sites-enabled/
-  read -p "The directory the sites should look to should be /var/www/ otherwise look into it"
-  echo "Check the code of the html pages of the site"
-  ls -l /var/www/*
-  read -p "Make sure they are all clean"
-  echo "Visit the website"
-  read -p "Have you made sure the website of the computer is good?" 
-elif [ $apacheYN == N ]
+elif [ $httpYN == N ]
 then
   echo "Killing http and https and apache2"
   ufw deny http
@@ -481,34 +475,3 @@ then
 else
   echo "RESPONSE NOT RECOGNIZED FOR dns"
 fi
-
-apt-get install firefox
-read -p "Config firefox: https://www.youtube.com/watch?v=JVxkTqLoyGY, find the firefox config part, also in the description"
-
-echo "Configuring pam files"
-echo "Configuring common-password"
-cp /etc/pam.d/common-password ~/Desktop/backups
-apt-get install libpam-cracklib
-configCommonPassword="File='/etc/pam.d/common-password' try: ||f=open(File) except: ||File=input('What|is|the|file|path|for|common-password|in|pam.d?|') ||f=open(File) d=f.read().split('\n') f.close()  fixedtext='' for|i|in|d: ||if|'pam_unix.so'|in|i: ||||i+='|remember=5|minlen=8' ||||print(i) ||||tmp=input('Is|this|correct,|type|Y|if|it|is,|type|the|correct|line|if|not?|') ||||if|tmp!='Y': ||||||i=tmp ||if|'pam_cracklib.so'|in|i: ||||i+='|ucredit=-1|lcredit=-1|dcredit=-1|ocredit=-1' ||||print(i) ||||tmp=input('Is|this|correct,|type|Y|if|it|is,|type|the|correct|line|if|not?|') ||||if|tmp!='Y': ||||||i=tmp ||fixedtext+=i+'\n'  f=open(File,'w') f.write(fixedtext) f.close()"
-echo '' > commonpasswordconfig.py
-for i in $configCommonPassword; do i=$( tr '|' ' ' <<<"$i" ); echo "$i" >> commonpasswordconfig.py; done
-python3 commonpasswordconfig.py
-
-echo "Editting common-auth"
-cp /etc/pam.d/common-auth ~/Desktop/backups
-echo "auth required pam_tally2.so deny=5 onerr=fail unlock_time=1800" >> /etc/pam.d/common-auth
-
-echo "Getting bum, a software that can show what softwares start at startup, might not be able to get"
-apt-get install bum
-bum
-
-echo "Disabling guest account"
-cp /etc/lightdm/lightdm.conf ~/Desktop/backups
-echo "allow-guest=false" >> /etc/lightdm/lightdm.conf
-
-echo "Setting up audits"
-apt-get install auditd
-auditctl –e 1
-gedit /etc/audit/auditd.conf
-read -p "Waiting for configuration to be finished in auditd.conf"
-
