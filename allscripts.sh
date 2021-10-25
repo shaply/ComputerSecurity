@@ -489,4 +489,5 @@ else
 fi
 
 read -p "*** Edit firefox settings as well. Video of what to do **(Skip to 6:45)**: https://www.youtube.com/watch?v=JVxkTqLoyGY ***"
+read -p "*** When using the time reader and stuff, check: /etc, /usr, /opt, /home ***VERY IMPORTANT"
 echo "Finally, do the time reader stuff and good luck!"
