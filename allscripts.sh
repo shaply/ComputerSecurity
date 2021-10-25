@@ -16,9 +16,9 @@ nums='160 161 162 163 279 151 167 168 42 50 61 62'
 for i in $nums; do sed -n $( echo $i )p /etc/login.defs; done
 read -p 'Make sure all the lines are correct'
 #If you did '160s/.*/PASS_MAX_DAYS\o01130/' The o011 would just mean type a tab
-sed -i '160s/.*/PASS_MAX_DAYS\ 30/' /etc/login.defs
-sed -i '161s/.*/PASS_MIN_DAYS\ 3/' /etc/login.defs
-sed -i '162s/.*/PASS_WARN_AGE\ 7/' /etc/login.defs
+sed -i '160s/.*/PASS_MAX_DAYS\ 90/' /etc/login.defs
+sed -i '161s/.*/PASS_MIN_DAYS\ 7/' /etc/login.defs
+sed -i '162s/.*/PASS_WARN_AGE\ 14/' /etc/login.defs
 sed -i '279s/.*/ENCRYPT_METHOD\ SHA512/' /etc/login.defs
 sed -i '151s/.*/UMASK\ 077/' /etc/login.defs
 sed -i '167s/.*/UID_MIN\ 1000/' /etc/login.defs
@@ -39,15 +39,18 @@ apt install python3
 apt-get install python3
 read -p "Make sure python3, sed, and vim work, if not manually download"
 
-echo "Changing the Passwords for every user to T3@m_C7Ickb@it"
-USERS=$( getent passwd {1000..6000} | cut -d: -f1 )
-apt install whois
-EncryptedPassword=$( mkpasswd -m sha-512 T3@m_C7Ickb@it )
-for USER in $USERS; do
-  usermod -p $EncryptedPassword $USER
-  passwd -x30 -n3 -w7 $USER
-  echo "$USER's password has been given a maximum age of 30 days, minimum of 3 days, and warning of 7 days." ;
-done
+scraper="import|urllib.request with|open('README.desktop')|as|file: ||d=file.read() d=d.split('\n') for|row|in|d: ||if|'https'|in|row: ||||s=row.split('https') ||||webUrl='https'+s[1][:-1] webUrl=urllib.request.urlopen(webUrl) data=webUrl.read().decode('UTF-8') data=data.split('\n') Gstuff=[] a=False for|row|in|data: ||if|a|and|'pre>'|not|in|row: ||||Gstuff.append(row) ||if|'pre>'|in|row: ||||if|a: ||||||break ||||else: ||||||a=True f=open('PCusers.txt',|'w') for|row|in|Gstuff: ||f.write(row) f.close()"
+echo '' > scrapeREADME.py
+for i in $scraper; do i=$( tr '|' ' ' <<<"$i" ); echo "$i" >> scrapeREADME.py; done
+python3 scrapeREADME.py
+read -p "Make sure the PCusers.txt file is correct/good"
+read -p "I REPEAT MAKE SURE PCusers.txt file is good"
+
+cp /etc/group ~/Desktop/backups/
+userReader="with|open('PCusers.txt')|as|file: ||allLines=file.read().split('\n') ||admins=[] ||users=[] ||which='administrators'  ||for|row|in|allLines: ||||if|'password'|not|in|row.lower(): ||||||||if|'users'|in|row.lower(): ||||||||||which='users' ||||||||if|which|==|'administrators': ||||||||||if|'|'|in|row: ||||||||||||row=row.split()[0] ||||||||||admins.append(row) ||||||||if|which=='users': ||||||||||users.append(row) ||allusers=admins+users  ||#Doesn't|delete|users|from|sudo|group|yet ||import|os ||os.chdir('/home') ||allUser=os.listdir() ||for|user|in|allUser: ||||if|user|not|in|allusers: ||||||os.system('userdel|%s'%(user))  with|open('/etc/group')|as|file: ||d|=|file.readline() ||while|'sudo'|not|in|d: ||||d=file.readline()  print('users',|users) d=d[:-1] splitted=d.split(':') usersInSudo=splitted[3].split(',') print(usersInSudo) for|user|in|usersInSudo: ||if|user|in|users: ||||os.system('gpasswd|-d|%s|sudo'%(user)) ||||pass"
+echo '' > userReader.py
+for i in $userReader; do i=$( tr '|' ' ' <<<"$i" ); echo "$i" >> userReader.py; done
+python3 userReader.py
 
 echo "*** Do you need to add a user, if so type the users account name, other wise type N ***"
 read userYN
@@ -73,18 +76,15 @@ do adduser $userYN
   read userYN
 done
 
-scraper="import|urllib.request with|open('README.desktop')|as|file: ||d=file.read() d=d.split('\n') for|row|in|d: ||if|'https'|in|row: ||||s=row.split('https') ||||webUrl='https'+s[1][:-1] webUrl=urllib.request.urlopen(webUrl) data=webUrl.read().decode('UTF-8') data=data.split('\n') Gstuff=[] a=False for|row|in|data: ||if|a|and|'pre>'|not|in|row: ||||Gstuff.append(row) ||if|'pre>'|in|row: ||||if|a: ||||||break ||||else: ||||||a=True f=open('PCusers.txt',|'w') for|row|in|Gstuff: ||f.write(row) f.close()"
-echo '' > scrapeREADME.py
-for i in $scraper; do i=$( tr '|' ' ' <<<"$i" ); echo "$i" >> scrapeREADME.py; done
-python3 scrapeREADME.py
-read -p "Make sure the PCusers.txt file is correct/good"
-read -p "I REPEAT MAKE SURE PCusers.txt file is good"
-
-cp /etc/group ~/Desktop/backups/
-userReader="with|open('PCusers.txt')|as|file: ||allLines=file.read().split('\n') ||admins=[] ||users=[] ||which='administrators'  ||for|row|in|allLines: ||||if|'password'|not|in|row.lower(): ||||||||if|'users'|in|row.lower(): ||||||||||which='users' ||||||||if|which|==|'administrators': ||||||||||if|'|'|in|row: ||||||||||||row=row.split()[0] ||||||||||admins.append(row) ||||||||if|which=='users': ||||||||||users.append(row) ||allusers=admins+users  ||#Doesn't|delete|users|from|sudo|group|yet ||import|os ||os.chdir('/home') ||allUser=os.listdir() ||for|user|in|allUser: ||||if|user|not|in|allusers: ||||||os.system('userdel|%s'%(user))  with|open('/etc/group')|as|file: ||d|=|file.readline() ||while|'sudo'|not|in|d: ||||d=file.readline()  print('users',|users) d=d[:-1] splitted=d.split(':') usersInSudo=splitted[3].split(',') print(usersInSudo) for|user|in|usersInSudo: ||if|user|in|users: ||||os.system('gpasswd|-d|%s|sudo'%(user)) ||||pass"
-echo '' > userReader.py
-for i in $userReader; do i=$( tr '|' ' ' <<<"$i" ); echo "$i" >> userReader.py; done
-python3 userReader.py
+echo "Changing the Passwords for every user to T3@m_C7Ickb@it"
+USERS=$( getent passwd {1000..6000} | cut -d: -f1 )
+apt install whois
+EncryptedPassword=$( mkpasswd -m sha-512 T3@m_C7Ickb@it )
+for USER in $USERS; do
+  usermod -p $EncryptedPassword $USER
+  passwd -x30 -n3 -w7 $USER
+  echo "$USER's password has been given a maximum age of 30 days, minimum of 3 days, and warning of 7 days." ;
+done
 
 echo "Checking Root UID If not 0, please change to 0"
 ROOTUID=$(id -u root)
@@ -489,5 +489,6 @@ else
 fi
 
 read -p "*** Edit firefox settings as well. Video of what to do **(Skip to 6:45)**: https://www.youtube.com/watch?v=JVxkTqLoyGY ***"
+read -p "*** Make sure to do pam stuff, follow: https://s3.amazonaws.com/cpvii/Training+materials/Unit+Eight+-+Ubuntu+Security.pdf ***"
 read -p "*** When using the time reader and stuff, check: /etc, /usr, /opt, /home ***VERY IMPORTANT"
 echo "Finally, do the time reader stuff and good luck!"
