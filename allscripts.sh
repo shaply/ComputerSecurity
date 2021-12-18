@@ -10,8 +10,24 @@ read -p "Did you make this in ~/Desktop/"
 mkdir -p ~/Desktop/backups
 chmod 777 ~/Desktop/backups
 
+#save all of the logs before you begin messing with stuff
+mkdir logs
+echo "auth log:" > logs/authLogs.txt
+cat /var/log/auth.log >> logs/authLogs.txt
+#echo "" > logs/authLogs.txt
+echo "dpkg log:" > logs/dpkgLogs.txt
+cat /var/log/dpkg.log >> logs/dpkgLogs.txt
+echo "" > logs/secureLogs.txt
+cat /var/log/secure > logs/secureLogs.txt
+echo  " " > logs/messageLogs.txt
+cat /var/log/messages >> logs/messageLogs.txt
+echo  " " > logs/historyLogs.txt
+cat /var/log/apt/history.log >> logs/historyLogs.txt
+echo " " > logs/historyLogs.txt
+cp /root/.bash_history logs/root.bash_history
+
 echo "Editting login.defs"
-cp /etc/login.defs ~/Desktop/backups/
+cp /etc/login.defs ~/Desktop/backups/login.defs
 nums='160 161 162 163 279 151 167 168 42 50 61 62'
 for i in $nums; do sed -n $( echo $i )p /etc/login.defs; done
 read -p 'Make sure all the lines are correct'
@@ -46,7 +62,7 @@ python3 scrapeREADME.py
 read -p "Make sure the PCusers.txt file is correct/good"
 read -p "I REPEAT MAKE SURE PCusers.txt file is good"
 
-cp /etc/group ~/Desktop/backups/
+cp /etc/group ~/Desktop/backups/group.txt
 userReader="with|open('PCusers.txt')|as|file: ||allLines=file.read().split('\n') ||admins=[] ||users=[] ||which='administrators'  ||for|row|in|allLines: ||||if|'password'|not|in|row.lower(): ||||||||if|'users'|in|row.lower(): ||||||||||which='users' ||||||||if|which|==|'administrators': ||||||||||if|'|'|in|row: ||||||||||||row=row.split()[0] ||||||||||admins.append(row) ||||||||if|which=='users': ||||||||||users.append(row) ||allusers=admins+users  ||#Doesn't|delete|users|from|sudo|group|yet ||import|os ||os.chdir('/home') ||allUser=os.listdir() ||for|user|in|allUser: ||||if|user|not|in|allusers: ||||||os.system('userdel|%s'%(user))  with|open('/etc/group')|as|file: ||d|=|file.readline() ||while|'sudo'|not|in|d: ||||d=file.readline()  print('users',|users) d=d[:-1] splitted=d.split(':') usersInSudo=splitted[3].split(',') print(usersInSudo) for|user|in|usersInSudo: ||if|user|in|users: ||||os.system('gpasswd|-d|%s|sudo'%(user)) ||||pass"
 echo '' > userReader.py
 for i in $userReader; do i=$( tr '|' ' ' <<<"$i" ); echo "$i" >> userReader.py; done
@@ -180,8 +196,8 @@ find / -name "*.php" -type f >> ~/Desktop/phpfiles.txt
 echo "All PHP files have been listed above. ('/var/cache/dictionaries-common/sqspell.php' is a system PHP file)"
 read -p "php files in phpfiles.txt"
 
-unalias -a
-echo "all alias have been removed. to add an alias, do: alias 'alias_name'='command' so like 'll'='ls -l'"
+alias > alias.txt
+read -p "Check alias.txt, if there are any bad alias, then unalias it"
 
 chmod 604 /etc/shadow
 echo "Read/Write permissions on shadow have been set."
@@ -198,31 +214,77 @@ echo $( find ~/.. -name "*.sh" -type f ) >> ~/Desktop/scriptsInUsers.txt
 read -p "Look at scriptsInUsers.txt"
 read -p "Check if some should be removed"
 
-cp /etc/rc.local ~/Desktop/backups/
+cp /etc/rc.local ~/Desktop/backups/rc.local
 echo > /etc/rc.local
 echo 'exit 0' >> /etc/rc.local
 echo "Any startup scripts have been removed."
 
-cp /etc/lightdm/lightdm.conf ~/Desktop/backups
+cp /etc/lightdm/lightdm.conf ~/Desktop/backups/lightdm.conf
 echo "allow-guest=false" >> /etc/lightdm/lightdm.conf
 echo "Turned guest off for lightdm"
 read -p "Check to make sure allow-guest=false is in /etc/lightdm/lightdm.conf"
 
+#Clears out the control-alt-delete, as this could possibly be a problem
+echo "# control-alt-delete - emergency keypress handling
+#
+# This task is run whenever the Control-Alt-Delete key combination is
+# pressed, and performs a safe reboot of the machine.
+description	\'emergency keypress handling\'
+author		\'Scott James Remnant <scott@netsplit.com>\'
+start on control-alt-delete
+task
+exec false" > /etc/init/control-alt-delete.conf
+echo "Finished cleaning control-alt-delete"
+
 apt-get install ufw -y -qq
 ufw enable
+ufw reset
+ufw enable
+ufw allow http
+ufw allow https
+ufw deny 23
+ufw deny 2049
+ufw deny 515
+ufw deny 111
 ufw deny 1337
-echo "Firewall enabled and port 1337 blocked."
+ufw logging high
+echo "Firewall enabled and configged"
+
 apt-get install gufw 
 read -p "Turn the options 'incoming' to reject, 'outgoing' to allow, 'status' to on, 'profile' to home"
 gufw
 read -p "Turn the options 'incoming' to reject, 'outgoing' to allow, 'status' to on, 'profile' to home"
 
-cp /etc/sudoers.d  ~/Desktop/backups/
+cp /etc/sudoers.d  ~/Desktop/backups/sudoers.d
+echo "sudoers.d should have lines:
+# User privilege specification
+root	ALL=(ALL:ALL) ALL
+# Members of the admin group may gain root privileges
+%admin ALL=(ALL) ALL
+# Allow members of group sudo to execute any command
+%sudo	ALL=(ALL:ALL) ALL"
 read -p "Check for any files for users that should not be administrators in /etc/sudoers.d."
+
+#Determines if there are any netcat backdoors running, and will delete some of them
+echo "" > backdoors.txt
+netstat -ntlup | grep -e "netcat" -e "nc" -e "ncat" >> backdoors.txt
+echo "Attempted to find any backdoors and put in backdoors.txt"
+
+#Remove any bad files that are in the users cron in /var/spool/cron/crontabs
+read -p "Look at /var/spool/cron/crontabs to see if there are any good/needed files, because once script remove, will need to add back"
+for i in $(ls /var/spool/cron/crontabs); do
+	cp /var/spool/cron/crontabs/$i ~/Desktop/backups/$i;
+	rm /var/spool/cron/crontabs/$i;
+done
+echo "finished removing files in /var/spool/cron/crontabs"
+
+cp /etc/environment ~/Desktop/backups/environment.txt
+echo 'PATH=\"/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\"' > /etc/environment
+echo "Finished cleaning the /etc/environment"
 
 echo "Installing clamav the virus scanner"
 apt-get install clamav
-clamscan -r -i
+clamscan -r / > infected_badFiles.txt
 read -p "Read for vulnerabilities"
 
 read -p "Do you still need hacking tools? After enter, hacking tools will be removed"
@@ -276,6 +338,15 @@ update-manager
 
 read -p "Waiting for update settings to be fixed"
 
+echo "deb http://security.ubuntu.com/ubuntu/ trusty-security main universe
+deb http://us.archive.ubuntu.com/ubuntu/ trusty-updates main universe" >> /etc/apt/sources.list
+add-apt-repository "deb http://archive.canonical.com/ubuntu precise partner"
+add-apt-repository "deb http://archive.ubuntu.com/ubuntu precise multiverse main universe restricted"
+add-apt-repository "deb http://security.ubuntu.com/ubuntu/ precise-security universe main multiverse restricted"
+add-apt-repository "deb http://archive.ubuntu.com/ubuntu precise-updates universe main multiverse restricted"
+echo "Updates also come from security and recommended updates"
+echo "Make SURE you still check out /etc/apt/sources.list to see if there are any bad links"
+
 apt update
 apt upgrade
 apt update
@@ -284,16 +355,73 @@ echo "AutoRemoving"
 apt autoremove -y -qq
 apt autoclean -y -qq
 
+#makes updates happen daily
+echo 'APT::Periodic::Update-Package-Lists \"1\";
+APT::Periodic::Download-Upgradeable-Packages \"0\";
+APT::Periodic::AutocleanInterval \"0\";' > /etc/apt/apt.conf.d/10periodic
+echo "Checks for updates automatically"
+
 echo "Writing script to fix sysctl.conf"
-scriptsysctlconfig='import|os #open|/etc/sysctl.conf|and|read File="/etc/sysctl.conf" try: ||f=open(File) ||text=f.read() ||f.close() except: ||File=input("what|is|the|file|path|for|sysctl?|") ||f=open(File) ||text=f.read() ||f.close() #Make|configs os.system("echo|$(|sysctl|-a|)|>|sysctlconfigs.txt") f=open("sysctlconfigs.txt") configstxt=f.read() f.close()  configs=["kernel.randomize_va_space","net.ipv4.ip_forward","net.ipv4.conf.all.rp_filter","net.ipv4.tcp_syncookies","net.ipv4.icmp_echo_ignore_broadcasts","net.ipv4.conf.all.log_martians"] fixes=["1","0","1","1","1","1"] fixedtxt=text for|i|in|range(len(configs)): ||if|configs[i]|in|configstxt: ||||fixedtxt+="\n"+configs[i]+"="+fixes[i] ||||os.system("sysctl|"+configs[i]+"="+fixes[i]) ||else: ||||tmpconfig=input(configs[i]|+|"|was|not|a|configuration|for|sysctl,|check|what|is|wrong|and|type|the|correct|configuration|name,|if|it|doesnt|exist,|type|N:|") ||||tmpfixed=input("What|is|the|correct|variable|for|it:|") ||||if|tmpconfig=="N"|or|tmpfixed=="N": ||||||continue ||||else: ||||||fixedtxt+="\n"+tmpconfig+"="+tmpfixed ||||||os.system("sysctl|"+tmpconfig+"="+tmpfixed) #Making|configs|with|search|in|terminal #Write|configs|in|/etc/sysctl.conf f=open(File,|"w") f.write(fixedtxt) f.close()'
+scriptsysctlconfig=' import|os #open|/etc/sysctl.conf|and|read File="/etc/sysctl.conf" try: ||f=open(File) ||text=f.read() ||f.close() except: ||File=input("what|is|the|file|path|for|sysctl?|") ||f=open(File) ||text=f.read() ||f.close() #Make|configs configs=["kernel.randomize_va_space","net.ipv4.ip_forward","net.ipv4.conf.all.rp_filter","net.ipv4.tcp_syncookies","net.ipv4.icmp_echo_ignore_broadcasts","net.ipv4.conf.all.log_martians","net.ipv4.tcp_rfc1337","net.ipv6.conf.all.rp_filter","net.ipv4.tcp_timestamps","net.ipv4.icmp_ignore_bogus_error_responses","net.ipv4.conf.all.send_redirects","net.ipv4.conf.default.accept_redirects","net.ipv4.conf.all.accept_redirects","net.ipv6.conf.default.accept_redirects","net.ipv6.conf.all.accept_redirects"] fixes=["1","0","1","1","1","1","1","1","0","1","0","0","0","0","0"] fixedtxt=text for|i|in|range(len(configs)): ||fixedtxt+="\\n"+configs[i]+"="+fixes[i] ||os.system("sysctl|"+configs[i]+"="+fixes[i]) #Making|configs|with|search|in|terminal #Write|configs|in|/etc/sysctl.conf f=open(File,"w") f.write(fixedtxt) f.close()'
 #Replaces | with a ' ' and every space in the string is a newline in the file
 echo '' > sysctlconf.py
 for i in $scriptsysctlconfig; do i=$( tr '|' ' ' <<<"$i" ); echo "$i" >> sysctlconf.py; done
-cp /etc/sysctl.conf ~/Desktop/backups/
+cp /etc/sysctl.conf ~/Desktop/backups/sysctl.conf
 python3 sysctlconf.py
 echo "Finished configuring /etc/sysctl.conf"
 
+install cracklib
+install auditd
+passwd -l root
+
+echo "If the :0:0: appears for anyone else, then make sure you config it because that only appears for root"
+echo "Check the home directories of the users and root to make sure they are the right ones, you can find it in the section similar to :/root:"
+echo "Check the last section, this is the thing that is run when someone logs in as that user, make sure it is safe"
+read -p "Go in the passwd file and check if there are any uses root:x:0:0:root:/root:/bin/bash except the root and stuff are different"
+
+#This clears out the HOST file so that unintentional/malicious networks are accidentally accessed.
+echo "Clearing HOSTS file"
+cp /etc/hosts ~/Desktop/backups/hosts.txt
+echo "127.0.0.1	localhost" > /etc/hosts
+echo "127.0.1.1	ubuntu"  >> /etc/hosts
+echo "::1     ip6-localhost ip6-loopback" >> /etc/hosts
+echo "fe00::0 ip6-localnet" >> /etc/hosts
+echo "ff00::0 ip6-mcastprefix" >> /etc/hosts
+echo "ff02::1 ip6-allnodes" >> /etc/hosts
+echo "ff02::2 ip6-allrouters" >> /etc/hosts
+
+chown root:root /etc/securetty
+chmod 0600 /etc/securetty
+chmod 644 /etc/crontab
+chmod 640 /etc/ftpusers
+chmod 440 /etc/inetd.conf
+chmod 440 /etc/xinetd.conf
+chmod 400 /etc/inetd.d
+chmod 644 /etc/hosts.allow
+chmod 440 /etc/sudoers
+chmod 640 /etc/shadow
+chown root:root /etc/shadow
+echo "Finished changing some common file permissions"
+
+#restart all of the DNS caches to clear out any unwanted connections
+/etc/init.d/dnsmasq restart > cacheClearing.txt
+/etc/init.d/nscd -i hosts >> cacheClearing.txt #some others said reload or restart would do the same thing
+/etc/init.d/nscd reload >> cacheClearing.txt
+rndc flush >> cacheClearing.txt	#this clears the cache when bind9 is installed
+echo "Clearing computer cache:" >> cacheClearing.txt
+#These next few clear out the cache on the computer
+free >> cacheClearing.txt
+sync && echo 3 > /proc/sys/vm/drop_caches
+#echoing the 3 in drop_caches tells the system to ___________________
+echo "After" >> cacheClearing.txt
+free >> cacheClearing.txt
+echo "Finished restarting caches"
+service xinetd reload
+
+service --status-all | grep "+" >> services.txt; echo “Finished Printing out services”
+
 echo "For each of the below questions, just put Y or N, DO NOT UNCAP IT iS Y or N"
+echo "BEFORE YOU DO THIS STUFF, MAKE SURE YOU CHECK OUT THE EXISTING SERVICES TO SEE IF YOU CAN FIND ANYTHING FROM THEM"
 echo Does this machine need Samba?
 read sambaYN
 echo Does this machine need FTP?
@@ -464,6 +592,7 @@ then
   apt-get install apache2 -y -qq
   ufw allow http 
   ufw allow https
+  iptables –A INPUT –p tcp –dport 80 –m limit –limit 25/minute –limit-burst 100 –j ACCEPT
 elif [ $httpYN == N ]
 then
   echo "Killing http and https and apache2"
