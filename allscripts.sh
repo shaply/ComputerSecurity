@@ -303,34 +303,36 @@ rm /usr/bin/nc
 apt-get purge john -y -qq
 apt-get purge john-data -y -qq
 echo "John the Ripper has been removed."
-apt-get purge hydra -y -qq
-apt-get purge hydra-gtk -y -qq
+apt-get purge hydra -y
+apt-get purge hydra-gtk -y
 echo "Hydra has been removed."
-apt-get purge aircrack-ng -y -qq
+apt-get purge aircrack-ng -y
 echo "Aircrack-NG has been removed."
-apt-get purge fcrackzip -y -qq
+apt-get purge fcrackzip -y 
 echo "FCrackZIP has been removed."
-apt-get purge lcrack -y -qq
+apt-get purge lcrack -y 
 echo "LCrack has been removed."
-apt-get purge ophcrack -y -qq
-apt-get purge ophcrack-cli -y -qq
+apt-get purge ophcrack -y
+apt-get purge ophcrack-cli -y 
 echo "OphCrack has been removed."
-apt-get purge pdfcrack -y -qq
+apt-get purge pdfcrack -y 
 echo "PDFCrack has been removed."
-apt-get purge pyrit -y -qq
+apt-get purge pyrit -y 
 echo "Pyrit has been removed."
-apt-get purge rarcrack -y -qq
+apt-get purge rarcrack -y 
 echo "RARCrack has been removed."
-apt-get purge sipcrack -y -qq
+apt-get purge sipcrack -y 
 echo "SipCrack has been removed."
-apt-get purge irpas -y -qq
+apt-get purge irpas -y 
 echo "IRPAS has been removed."
-apt-get purge zenmap nmap -y -qq
+apt-get purge zenmap nmap -y
 echo "Zenmap and nmap has been removed."
 echo 'Are there any hacking tools shown? (not counting libcrack2:amd64 or cracklib-runtime)'
 dpkg -l | egrep "crack|hack" >> ~/Desktop/Script.log
-apt-get purge logkeys -y -qq
+apt-get purge logkeys -y
 echo "LogKeys has been removed."
+apt purge medusa -y
+dpkg --remove netcat
 
 echo "Check the settings of updates"
 echo "Instead of clicking update, click settings"
@@ -418,10 +420,34 @@ free >> cacheClearing.txt
 echo "Finished restarting caches"
 service xinetd reload
 
+#Make cron.allow and at.allow and deleting cron.deny and at.deny
+/bin/rm -f /etc/cron.deny
+/bin/rm -f /etc/at.deny
+echo "root" > /etc/cron.allow
+echo "root" > /etc/at.allow
+/bin/chown root:root /etc/cron.allow
+/bin/chown root:root /etc/at.allow
+/bin/chmod 400 /etc/at.allow
+/bin/chmod 400 /etc/cron.allow
+echo "Finished creating cron/at.allow and deleting cron/at.deny"
+
+#Uses find, looks for type of regular file that has either permissions of suid of 2000 or 4000
+echo "Suspicious SUID permission files" > suspectFind.txt
+find / -type f \( -perm -04000 -o -perm -02000 \) >> suspectFind.txt 
+echo "" >> suspectFind.txt
+echo "Finished looking for suspicious files with SUID permissions"
+
+
+#Finds files that appear to be placed down by no one. Would tell you if someone placed down something, then removed their user leaving that file around
+( echo "Finding files with no Family" >> suspectFind.txt; find / \( -nouser -o -nogroup \) >> suspectFind.txt; echo "" >> suspectFind.txt; echo "Finished looking for suspicious file with no user/group" ) &
+
+#finds directories that can be written by anyone, anywhere
+( echo "finding world writable files" >> worldWrite.txt; find / -perm -2 ! -type l -ls >> worldWrite.txt; echo "Finished looking for world writable files") &
+
 service --status-all | grep "+" >> services.txt; echo “Finished Printing out services”
 
 echo "For each of the below questions, just put Y or N, DO NOT UNCAP IT iS Y or N"
-echo "BEFORE YOU DO THIS STUFF, MAKE SURE YOU CHECK OUT THE EXISTING SERVICES TO SEE IF YOU CAN FIND ANYTHING FROM THEM"
+echo "BEFORE YOU DO THIS STUFF, MAKE SURE YOU CHECK OUT THE EXISTING SERVICES TO SEE IF YOU CAN FIND ANYTHING FROM THEM, ALSO YOU DON'T REALLY NEED TO DELETE THEM"
 echo Does this machine need Samba?
 read sambaYN
 echo Does this machine need FTP?
