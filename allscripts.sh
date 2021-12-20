@@ -381,6 +381,7 @@ echo "Check the home directories of the users and root to make sure they are the
 echo "Check the last section, this is the thing that is run when someone logs (it is their terminal) in as that user, make sure it is safe"
 echo "For users, that last section should just be /bin/bash"
 read -p "Go in the passwd file and check if there are any uses root:x:0:0:root:/root:/bin/bash except the root and stuff are different"
+read -p "Go in /etc/shadow file to check for any bad passwords"
 
 #This clears out the HOST file so that unintentional/malicious networks are accidentally accessed.
 echo "Clearing HOSTS file"
