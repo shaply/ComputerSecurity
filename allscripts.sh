@@ -270,6 +270,11 @@ echo "" > backdoors.txt
 netstat -ntlup | grep -e "netcat" -e "nc" -e "ncat" >> backdoors.txt
 echo "Attempted to find any backdoors and put in backdoors.txt"
 
+read -p "don't forget to run netstat to find backdoors or stuff by your self"
+
+ls -Rl /home/ > userFiles.txt
+read -p "Just in case, look for files in directories of users again in userFiles.txt"
+
 #Remove any bad files that are in the users cron in /var/spool/cron/crontabs
 read -p "Look at /var/spool/cron/crontabs to see if there are any good/needed files, because once script remove, will need to add back"
 for i in $(ls /var/spool/cron/crontabs); do
@@ -286,6 +291,14 @@ echo "Installing clamav the virus scanner"
 apt-get install clamav
 clamscan -r / > infected_badFiles.txt
 read -p "Read for vulnerabilities"
+
+echo "Installing rkhunter to find bad things"
+apt install rkhunter -y
+rkhunter --c --enable all --disable none > rkhunterScan.txt
+echo "Installing Chkroot to find rootkits"
+apt install chkrootkit -y
+chkrootkit > chkrootkitScan.txt
+read -p "Look at rkhunterScan.txt and chkrootkitScan.txt"
 
 read -p "Do you still need hacking tools? After enter, hacking tools will be removed"
 echo "Removing Netcat"
@@ -333,6 +346,10 @@ apt-get purge logkeys -y
 echo "LogKeys has been removed."
 apt purge medusa -y
 dpkg --remove netcat
+apt purge crack -y
+dpkg --remove crack
+echo "crack has been removed"
+
 
 echo "Check the settings of updates"
 echo "Instead of clicking update, click settings"
@@ -432,6 +449,9 @@ echo "root" > /etc/at.allow
 /bin/chmod 400 /etc/at.allow
 /bin/chmod 400 /etc/cron.allow
 echo "Finished creating cron/at.allow and deleting cron/at.deny"
+
+chmod 644 /etc/profile.d
+chown root:root /etc/profile.d
 
 #Uses find, looks for type of regular file that has either permissions of suid of 2000 or 4000
 echo "Suspicious SUID permission files" > suspectFind.txt
@@ -647,5 +667,8 @@ fi
 
 read -p "*** Edit firefox settings as well. Video of what to do **(Skip to 6:45)**: https://www.youtube.com/watch?v=JVxkTqLoyGY ***"
 read -p "*** Make sure to do pam stuff, follow: https://s3.amazonaws.com/cpvii/Training+materials/Unit+Eight+-+Ubuntu+Security.pdf ***"
+read -p "*** Run ETCFilePerm.py and make sure all file settings besides rc and some other files are set at most to -rwxr-xr-x and owned by root ***"
+read -p "*** Find Trojans in /etc/rc* by looking at added time and comparing with others, and in /tmp ***"
+read -p "*** Checklist for critical services include: Making sure they work, making sure they start up at boot, making sure configs are right, making sure file perms are right ***"
 read -p "*** When using the time reader and stuff, check: /etc, /usr, /opt, /home ***VERY IMPORTANT"
 echo "Finally, do the time reader stuff and good luck!"
