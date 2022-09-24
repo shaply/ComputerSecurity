@@ -1,15 +1,8 @@
-#Reference File
 # Package generated configuration file
 # See the sshd_config(5) manpage for details
 
-AllowTcpForwarding yes
-ClientAliveCountMax 2
-Compression no
-MaxSessions 2
-AllowAgentForwarding no
-
 # What ports, IPs and protocols we listen for
-Port 22000
+Port 22
 # Use these options to restrict which interfaces/protocols sshd will bind to
 #ListenAddress ::
 #ListenAddress 0.0.0.0
@@ -18,25 +11,26 @@ Protocol 2
 HostKey /etc/ssh/ssh_host_rsa_key
 HostKey /etc/ssh/ssh_host_dsa_key
 HostKey /etc/ssh/ssh_host_ecdsa_key
+HostKey /etc/ssh/ssh_host_ed25519_key
 #Privilege Separation is turned on for security
-UsePrivilegeSeparation sandbox
+UsePrivilegeSeparation yes
 
 # Lifetime and size of ephemeral version 1 server key
 KeyRegenerationInterval 3600
-ServerKeyBits 768
+ServerKeyBits 1024
 
 # Logging
 SyslogFacility AUTH
-LogLevel VERBOSE
+LogLevel INFO
 
 # Authentication:
 LoginGraceTime 120
-PermitRootLogin no
+PermitRootLogin without-password
 StrictModes yes
 
 RSAAuthentication yes
 PubkeyAuthentication yes
-#AuthorizedKeysFile %h/.ssh/authorized_keys
+#AuthorizedKeysFile	%h/.ssh/authorized_keys
 
 # Don't read the user's ~/.rhosts and ~/.shosts files
 IgnoreRhosts yes
@@ -67,13 +61,12 @@ ChallengeResponseAuthentication no
 #GSSAPIAuthentication no
 #GSSAPICleanupCredentials yes
 
-X11Forwarding no
+X11Forwarding yes
 X11DisplayOffset 10
 PrintMotd no
 PrintLastLog yes
 TCPKeepAlive yes
 #UseLogin no
-MaxAuthTries 2
 
 #MaxStartups 10:30:60
 #Banner /etc/issue.net
