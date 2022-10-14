@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 
 echo "Make Sure You have Everything Set. All codes set. Root Set. Everything!"
 echo "Linux Ubuntu Script\nThe Ultimate One\nLet's Pray it Works"
@@ -196,7 +196,7 @@ find / -name "*.php" -type f >> ~/Desktop/phpfiles.txt
 echo "All PHP files have been listed above. ('/var/cache/dictionaries-common/sqspell.php' is a system PHP file)"
 read -p "php files in phpfiles.txt"
 
-alias > alias.txt
+echo $( alias ) > alias.txt
 read -p "Check alias.txt, if there are any bad alias, then unalias it"
 
 chmod 604 /etc/shadow
@@ -272,7 +272,7 @@ echo "Attempted to find any backdoors and put in backdoors.txt"
 
 read -p "don't forget to run netstat to find backdoors or stuff by your self"
 
-ls -Rl /home/ > userFiles.txt
+echo $( ls -Rl /home/ ) > userFiles.txt
 read -p "Just in case, look for files in directories of users again in userFiles.txt"
 
 #Remove any bad files that are in the users cron in /var/spool/cron/crontabs
@@ -664,6 +664,8 @@ then
 else
   echo "RESPONSE NOT RECOGNIZED FOR dns"
 fi
+
+echo "Need to add audit stuff too"
 
 read -p "*** Edit firefox settings as well. Video of what to do **(Skip to 6:45)**: https://www.youtube.com/watch?v=JVxkTqLoyGY ***"
 read -p "*** Make sure to do pam stuff, follow: https://s3.amazonaws.com/cpvii/Training+materials/Unit+Eight+-+Ubuntu+Security.pdf ***"
