@@ -192,6 +192,7 @@ find ~/.. -name "*.svgz" -type f >> ~/Desktop/mediafiles.txt
 read -p "Waiting for media file clearance"
 
 echo "Finding php files php files are service files"
+echo "" > ~/Desktop/phpfiles.txt
 find / -name "*.php" -type f >> ~/Desktop/phpfiles.txt
 echo "All PHP files have been listed above. ('/var/cache/dictionaries-common/sqspell.php' is a system PHP file)"
 read -p "php files in phpfiles.txt"
@@ -205,11 +206,13 @@ echo "Read/Write permissions on shadow have been set."
 chmod 640 .bash_history
 echo "Bash history file permissions set .bash_history"
 
+echo "" > ~/Desktop/scriptsInBin.txt
 echo $( find /bin/ -name "*.sh" -type f ) >> ~/Desktop/scriptsInBin.txt
 read -p "Look at scriptsInBin.txt"
 find /bin/ -name "*.sh" -type f -delete
 echo "Scripts in bin have been removed."
 
+echo "" > ~/Desktop/scriptsInUsers.txt
 echo $( find ~/.. -name "*.sh" -type f ) >> ~/Desktop/scriptsInUsers.txt
 read -p "Look at scriptsInUsers.txt"
 read -p "Check if some should be removed"
@@ -349,7 +352,7 @@ dpkg --remove netcat
 apt purge crack -y
 dpkg --remove crack
 echo "crack has been removed"
-
+read -p "Look at Script.log and see if any hack apps in there"
 
 echo "Check the settings of updates"
 echo "Instead of clicking update, click settings"
@@ -454,19 +457,46 @@ chmod 644 /etc/profile.d
 chown root:root /etc/profile.d
 
 #Uses find, looks for type of regular file that has either permissions of suid of 2000 or 4000
+echo "" > suspectFind.txt
 echo "Suspicious SUID permission files" > suspectFind.txt
 find / -type f \( -perm -04000 -o -perm -02000 \) >> suspectFind.txt 
-echo "" >> suspectFind.txt
-echo "Finished looking for suspicious files with SUID permissions"
+read -p "Finished looking for suspicious files with SUID permissions, in suspectFind.txt"
 
 
 #Finds files that appear to be placed down by no one. Would tell you if someone placed down something, then removed their user leaving that file around
-( echo "Finding files with no Family" >> suspectFind.txt; find / \( -nouser -o -nogroup \) >> suspectFind.txt; echo "" >> suspectFind.txt; echo "Finished looking for suspicious file with no user/group" ) &
+echo "Finding files with no Family" >> suspectFind.txt
+find / \( -nouser -o -nogroup \) >> suspectFind.txt
+echo "" >> suspectFind.txt
+read -p "Finished looking for suspicious file with no user/group, in suspectFind.txt"
 
 #finds directories that can be written by anyone, anywhere
-( echo "finding world writable files" >> worldWrite.txt; find / -perm -2 ! -type l -ls >> worldWrite.txt; echo "Finished looking for world writable files") &
+echo "" > worldWrite.txt
+echo "finding world writable files" >> worldWrite.txt
+find / -perm -2 ! -type l -ls >> worldWrite.txt
+read -p "Finished looking for world writable files, worldWrite.txt"
 
-service --status-all | grep "+" >> services.txt; echo “Finished Printing out services”
+echo "" > services.txt
+service --status-all | grep "+" >> services.txt
+read -p "All active services in services.txt"
+
+dpkg -l > apps.txt
+gedit apps.txt &
+read -p "Fix apps.txt as need be so that only the lines with app names are in the file"
+echo "" > writeApps.py
+writeApps='fixed|=|"" with|open("apps.txt")|as|file: ||d|=|file.readline() ||x|=|"N" ||while|(x|==|"N"): ||||a|=|input("Which|column|is|the|app|name|in|on|each|line?,|like|1,2,3...") ||||a|=|int(a) ||||print(d.split()[a-1]) ||||x|=|input("Is|this|the|right|column?,|YN") ||while|(d): ||||fixed|+=|d.split()[a-1]|+|"\n" ||||d|=|file.readline() with|open("ALLAPPS.txt","w")|as|file: ||file.write(fixed)'
+for i in $writeApps; do i=$( tr '|' ' ' <<<"$i" ); echo "$i" >> writeApps.py; done
+python3 writeApps.py
+echo "Check to make sure ALLAPPS.txt is correct"
+read -p "Download the BaseApps[version].txt from github, AND PUT THE FILE IN DESKTOP AS correctapps.txt"
+appChecker='dFiles|=|open("ALLAPPS.txt") cFiles|=|open("correctapps.txt") d|=|dFiles.read().split() c|=|cFiles.read().split() dFiles.close() cFiles.close() some|=|open("appsCompared.txt","w") some.write("APPS|IN|IMAGE|NOT|IN|BASE|\n") for|i|in|d: ||if|(i|not|in|c): ||||some.write(i) ||||some.write("\n") some.write("\n") some.write("APPS|NOT|IN|IMAGE|IN|BASE|\n") for|i|in|c: ||if|(i|not|in|d): ||||some.write(i) ||||some.write("\n") some.close()'
+echo "" > appChecker.py
+for i in $appChecker; do i=$( tr '|' ' ' <<<"$i" ); echo "$i" >> appChecker.py; done
+python3 appChecker.py
+gedit appsCompared.txt &
+read -p "Look at appsCompared.txt"
+
+
+
 
 echo "For each of the below questions, just put Y or N, DO NOT UNCAP IT iS Y or N"
 echo "BEFORE YOU DO THIS STUFF, MAKE SURE YOU CHECK OUT THE EXISTING SERVICES TO SEE IF YOU CAN FIND ANYTHING FROM THEM, ALSO YOU DON'T REALLY NEED TO DELETE THEM"
