@@ -26,25 +26,21 @@ cat /var/log/apt/history.log >> logs/historyLogs.txt
 echo " " > logs/historyLogs.txt
 cp /root/.bash_history logs/root.bash_history
 
+apt install libpam-cracklib -y
+
 echo "Editting login.defs"
 cp /etc/login.defs backups/login.defs
-nums='160 161 162 163 279 151 167 168 42 50 61 62'
-for i in $nums; do sed -n $( echo $i )p /etc/login.defs; done
-read -p 'Make sure all the lines are correct'
-#If you did '160s/.*/PASS_MAX_DAYS\o01130/' The o011 would just mean type a tab
-sed -i '160s/.*/PASS_MAX_DAYS\ 90/' /etc/login.defs
-sed -i '161s/.*/PASS_MIN_DAYS\ 7/' /etc/login.defs
-sed -i '162s/.*/PASS_WARN_AGE\ 14/' /etc/login.defs
-sed -i '279s/.*/ENCRYPT_METHOD\ SHA512/' /etc/login.defs
-sed -i '151s/.*/UMASK\ 077/' /etc/login.defs
-sed -i '167s/.*/UID_MIN\ 1000/' /etc/login.defs
-sed -i '168s/.*/UID_MAX\ 60000/' /etc/login.defs
-sed -i '42s/.*/FAILLOG_ENAB\ yes/' /etc/login.defs
-sed -i '50s/.*/LOG_UNKFAIL_ENAB\ yes/' /etc/login.defs
-sed -i '61s/.*/SYSLOG_SU_ENAB\ yes/' /etc/login.defs
-sed -i '62s/.*/SYSLOG_SG_ENAB\ yes/' /etc/login.defs
-for i in $nums; do sed -n $( echo $i )p /etc/login.defs; done
-read -p 'Make sure all the lines are correct'
+read -p 'PASS_MAX_DAYS 90'
+read -p 'PASS_MIN_DAYS 7'
+read -p 'PASS_WARN_AGE 14'
+read -p 'ENCRYPT_METHOD SHA512'
+read -p 'UMASK 077'
+read -p 'UID_MIN 1000'
+read -p 'UID_MAX 60000'
+read -p 'FAILLOG_ENAB yes'
+read -p 'LOG_UNKFAIL_ENAB yes'
+read -p 'SYSLOG_SU_ENAB yes'
+read -p 'SYSLOG_SG_ENAB yes'
 echo "Password policies have been set with /etc/login.defs."
 
 echo "Downloading Python3, Vim, Updates, and stuff"
