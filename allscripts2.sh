@@ -7,8 +7,8 @@ read -p "Make Sure you have done the forensics Questions"
 read -p "Did you run as root? If not, rerun"
 read -p "Did you make this in ~/Desktop/"
 
-mkdir -p ~/Desktop/backups
-chmod 777 ~/Desktop/backups
+mkdir -p backups
+chmod 777 backups
 
 #save all of the logs before you begin messing with stuff
 mkdir logs
@@ -27,7 +27,7 @@ echo " " > logs/historyLogs.txt
 cp /root/.bash_history logs/root.bash_history
 
 echo "Editting login.defs"
-cp /etc/login.defs ~/Desktop/backups/login.defs
+cp /etc/login.defs backups/login.defs
 nums='160 161 162 163 279 151 167 168 42 50 61 62'
 for i in $nums; do sed -n $( echo $i )p /etc/login.defs; done
 read -p 'Make sure all the lines are correct'
@@ -62,7 +62,7 @@ python3 scrapeREADME.py
 read -p "Make sure the PCusers.txt file is correct/good"
 read -p "I REPEAT MAKE SURE PCusers.txt file is good"
 
-cp /etc/group ~/Desktop/backups/group.txt
+cp /etc/group backups/group.txt
 userReader="with|open('PCusers.txt')|as|file: ||allLines=file.read().split('\n') ||admins=[] ||users=[] ||which='administrators'  ||for|row|in|allLines: ||||if|'password'|not|in|row.lower(): ||||||||if|'users'|in|row.lower(): ||||||||||which='users' ||||||||if|which|==|'administrators': ||||||||||if|'|'|in|row: ||||||||||||row=row.split()[0] ||||||||||admins.append(row) ||||||||if|which=='users': ||||||||||users.append(row) ||allusers=admins+users  ||#Doesn't|delete|users|from|sudo|group|yet ||import|os ||os.chdir('/home') ||allUser=os.listdir() ||for|user|in|allUser: ||||if|user|not|in|allusers: ||||||os.system('userdel|%s'%(user))  with|open('/etc/group')|as|file: ||d|=|file.readline() ||while|'sudo'|not|in|d: ||||d=file.readline()  print('users',|users) d=d[:-1] splitted=d.split(':') usersInSudo=splitted[3].split(',') print(usersInSudo) for|user|in|usersInSudo: ||if|user|in|users: ||||os.system('gpasswd|-d|%s|sudo'%(user)) ||||pass"
 echo '' > userReader.py
 for i in $userReader; do i=$( tr '|' ' ' <<<"$i" ); echo "$i" >> userReader.py; done
@@ -110,92 +110,92 @@ else
   echo "Root UID is set to 0"
 fi
 
-echo "Finding All media files, putting in media file: ~/Desktop/mediafiles.txt"
+echo "Finding All media files, putting in media file: mediafiles.txt"
 echo "What is the the home directory? ie /home"
 read homeDir
-find $homeDir -name "*.midi" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.mid" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.mod" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.mp3" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.mp2" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.mpa" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.abs" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.mpega" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.au" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.snd" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.wav" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.aiff" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.aif" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.sid" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.flac" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.ogg" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.mpeg" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.mpg" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.mpe" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.dl" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.movie" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.movi" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.mv" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.iff" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.anim5" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.anim3" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.anim7" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.avi" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.vfw" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.avx" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.fli" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.flc" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.mov" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.qt" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.spl" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.swf" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.dcr" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.dir" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.dxr" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.rpm" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.rm" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.smi" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.ra" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.ram" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.rv" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.wmv" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.asf" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.asx" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.wma" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.wax" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.wmv" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.wmx" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.3gp" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.mov" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.mp4" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.avi" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.swf" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.flv" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.m4v" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.tiff" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.tif" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.rs" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.im1" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.gif" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.jpeg" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.jpg" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.jpe" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.png" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.rgb" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.xwd" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.xpm" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.ppm" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.pbm" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.pgm" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.pcx" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.ico" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.svg" -type f >> ~/Desktop/mediafiles.txt
-find $homeDir -name "*.svgz" -type f >> ~/Desktop/mediafiles.txt
+find $homeDir -name "*.midi" -type f >> mediafiles.txt
+find $homeDir -name "*.mid" -type f >> mediafiles.txt
+find $homeDir -name "*.mod" -type f >> mediafiles.txt
+find $homeDir -name "*.mp3" -type f >> mediafiles.txt
+find $homeDir -name "*.mp2" -type f >> mediafiles.txt
+find $homeDir -name "*.mpa" -type f >> mediafiles.txt
+find $homeDir -name "*.abs" -type f >> mediafiles.txt
+find $homeDir -name "*.mpega" -type f >> mediafiles.txt
+find $homeDir -name "*.au" -type f >> mediafiles.txt
+find $homeDir -name "*.snd" -type f >> mediafiles.txt
+find $homeDir -name "*.wav" -type f >> mediafiles.txt
+find $homeDir -name "*.aiff" -type f >> mediafiles.txt
+find $homeDir -name "*.aif" -type f >> mediafiles.txt
+find $homeDir -name "*.sid" -type f >> mediafiles.txt
+find $homeDir -name "*.flac" -type f >> mediafiles.txt
+find $homeDir -name "*.ogg" -type f >> mediafiles.txt
+find $homeDir -name "*.mpeg" -type f >> mediafiles.txt
+find $homeDir -name "*.mpg" -type f >> mediafiles.txt
+find $homeDir -name "*.mpe" -type f >> mediafiles.txt
+find $homeDir -name "*.dl" -type f >> mediafiles.txt
+find $homeDir -name "*.movie" -type f >> mediafiles.txt
+find $homeDir -name "*.movi" -type f >> mediafiles.txt
+find $homeDir -name "*.mv" -type f >> mediafiles.txt
+find $homeDir -name "*.iff" -type f >> mediafiles.txt
+find $homeDir -name "*.anim5" -type f >> mediafiles.txt
+find $homeDir -name "*.anim3" -type f >> mediafiles.txt
+find $homeDir -name "*.anim7" -type f >> mediafiles.txt
+find $homeDir -name "*.avi" -type f >> mediafiles.txt
+find $homeDir -name "*.vfw" -type f >> mediafiles.txt
+find $homeDir -name "*.avx" -type f >> mediafiles.txt
+find $homeDir -name "*.fli" -type f >> mediafiles.txt
+find $homeDir -name "*.flc" -type f >> mediafiles.txt
+find $homeDir -name "*.mov" -type f >> mediafiles.txt
+find $homeDir -name "*.qt" -type f >> mediafiles.txt
+find $homeDir -name "*.spl" -type f >> mediafiles.txt
+find $homeDir -name "*.swf" -type f >> mediafiles.txt
+find $homeDir -name "*.dcr" -type f >> mediafiles.txt
+find $homeDir -name "*.dir" -type f >> mediafiles.txt
+find $homeDir -name "*.dxr" -type f >> mediafiles.txt
+find $homeDir -name "*.rpm" -type f >> mediafiles.txt
+find $homeDir -name "*.rm" -type f >> mediafiles.txt
+find $homeDir -name "*.smi" -type f >> mediafiles.txt
+find $homeDir -name "*.ra" -type f >> mediafiles.txt
+find $homeDir -name "*.ram" -type f >> mediafiles.txt
+find $homeDir -name "*.rv" -type f >> mediafiles.txt
+find $homeDir -name "*.wmv" -type f >> mediafiles.txt
+find $homeDir -name "*.asf" -type f >> mediafiles.txt
+find $homeDir -name "*.asx" -type f >> mediafiles.txt
+find $homeDir -name "*.wma" -type f >> mediafiles.txt
+find $homeDir -name "*.wax" -type f >> mediafiles.txt
+find $homeDir -name "*.wmv" -type f >> mediafiles.txt
+find $homeDir -name "*.wmx" -type f >> mediafiles.txt
+find $homeDir -name "*.3gp" -type f >> mediafiles.txt
+find $homeDir -name "*.mov" -type f >> mediafiles.txt
+find $homeDir -name "*.mp4" -type f >> mediafiles.txt
+find $homeDir -name "*.avi" -type f >> mediafiles.txt
+find $homeDir -name "*.swf" -type f >> mediafiles.txt
+find $homeDir -name "*.flv" -type f >> mediafiles.txt
+find $homeDir -name "*.m4v" -type f >> mediafiles.txt
+find $homeDir -name "*.tiff" -type f >> mediafiles.txt
+find $homeDir -name "*.tif" -type f >> mediafiles.txt
+find $homeDir -name "*.rs" -type f >> mediafiles.txt
+find $homeDir -name "*.im1" -type f >> mediafiles.txt
+find $homeDir -name "*.gif" -type f >> mediafiles.txt
+find $homeDir -name "*.jpeg" -type f >> mediafiles.txt
+find $homeDir -name "*.jpg" -type f >> mediafiles.txt
+find $homeDir -name "*.jpe" -type f >> mediafiles.txt
+find $homeDir -name "*.png" -type f >> mediafiles.txt
+find $homeDir -name "*.rgb" -type f >> mediafiles.txt
+find $homeDir -name "*.xwd" -type f >> mediafiles.txt
+find $homeDir -name "*.xpm" -type f >> mediafiles.txt
+find $homeDir -name "*.ppm" -type f >> mediafiles.txt
+find $homeDir -name "*.pbm" -type f >> mediafiles.txt
+find $homeDir -name "*.pgm" -type f >> mediafiles.txt
+find $homeDir -name "*.pcx" -type f >> mediafiles.txt
+find $homeDir -name "*.ico" -type f >> mediafiles.txt
+find $homeDir -name "*.svg" -type f >> mediafiles.txt
+find $homeDir -name "*.svgz" -type f >> mediafiles.txt
 read -p "Waiting for media file clearance"
 
 echo "Finding php files php files are service files"
-echo "" > ~/Desktop/phpfiles.txt
-find / -name "*.php" -type f >> ~/Desktop/phpfiles.txt
+echo "" > phpfiles.txt
+find / -name "*.php" -type f >> phpfiles.txt
 echo "All PHP files have been listed above. ('/var/cache/dictionaries-common/sqspell.php' is a system PHP file)"
 read -p "php files in phpfiles.txt"
 
@@ -208,23 +208,23 @@ echo "Read/Write permissions on shadow have been set."
 chmod 640 .bash_history
 echo "Bash history file permissions set .bash_history"
 
-echo "" > ~/Desktop/scriptsInBin.txt
-echo $( find /bin/ -name "*.sh" -type f ) >> ~/Desktop/scriptsInBin.txt
+echo "" > scriptsInBin.txt
+echo $( find /bin/ -name "*.sh" -type f ) >> scriptsInBin.txt
 read -p "Look at scriptsInBin.txt"
 find /bin/ -name "*.sh" -type f -delete
 echo "Scripts in bin have been removed."
 
-echo "" > ~/Desktop/scriptsInUsers.txt
-echo $( find ~/.. -name "*.sh" -type f ) >> ~/Desktop/scriptsInUsers.txt
+echo "" > scriptsInUsers.txt
+echo $( find ~/.. -name "*.sh" -type f ) >> scriptsInUsers.txt
 read -p "Look at scriptsInUsers.txt"
 read -p "Check if some should be removed"
 
-cp /etc/rc.local ~/Desktop/backups/rc.local
+cp /etc/rc.local backups/rc.local
 echo > /etc/rc.local
 echo 'exit 0' >> /etc/rc.local
 echo "Any startup scripts have been removed."
 
-cp /etc/lightdm/lightdm.conf ~/Desktop/backups/lightdm.conf
+cp /etc/lightdm/lightdm.conf backups/lightdm.conf
 echo "allow-guest=false" >> /etc/lightdm/lightdm.conf
 echo "Turned guest off for lightdm"
 read -p "Check to make sure allow-guest=false is in /etc/lightdm/lightdm.conf"
@@ -260,7 +260,7 @@ read -p "Turn the options 'incoming' to reject, 'outgoing' to allow, 'status' to
 gufw
 read -p "Turn the options 'incoming' to reject, 'outgoing' to allow, 'status' to on, 'profile' to home"
 
-cp /etc/sudoers.d  ~/Desktop/backups/sudoers.d
+cp /etc/sudoers.d  backups/sudoers.d
 echo "sudoers.d should have lines:
 # User privilege specification
 root	ALL=(ALL:ALL) ALL
@@ -283,12 +283,12 @@ read -p "Just in case, look for files in directories of users again in userFiles
 #Remove any bad files that are in the users cron in /var/spool/cron/crontabs
 read -p "Look at /var/spool/cron/crontabs to see if there are any good/needed files, because once script remove, will need to add back"
 for i in $(ls /var/spool/cron/crontabs); do
-	cp /var/spool/cron/crontabs/$i ~/Desktop/backups/$i;
+	cp /var/spool/cron/crontabs/$i backups/$i;
 	rm /var/spool/cron/crontabs/$i;
 done
 echo "finished removing files in /var/spool/cron/crontabs"
 
-cp /etc/environment ~/Desktop/backups/environment.txt
+cp /etc/environment backups/environment.txt
 echo 'PATH=\"/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\"' > /etc/environment
 echo "Finished cleaning the /etc/environment"
 
@@ -346,7 +346,7 @@ echo "IRPAS has been removed."
 apt-get purge zenmap nmap -y
 echo "Zenmap and nmap has been removed."
 echo 'Are there any hacking tools shown? (not counting libcrack2:amd64 or cracklib-runtime)'
-dpkg -l | egrep "crack|hack" >> ~/Desktop/Script.log
+dpkg -l | egrep "crack|hack" >> Script.log
 apt-get purge logkeys -y
 echo "LogKeys has been removed."
 apt purge medusa -y
@@ -390,7 +390,7 @@ scriptsysctlconfig=' import|os #open|/etc/sysctl.conf|and|read File="/etc/sysctl
 #Replaces | with a ' ' and every space in the string is a newline in the file
 echo '' > sysctlconf.py
 for i in $scriptsysctlconfig; do i=$( tr '|' ' ' <<<"$i" ); echo "$i" >> sysctlconf.py; done
-cp /etc/sysctl.conf ~/Desktop/backups/sysctl.conf
+cp /etc/sysctl.conf backups/sysctl.conf
 python3 sysctlconf.py
 echo "Finished configuring /etc/sysctl.conf"
 
@@ -407,7 +407,7 @@ read -p "Go in /etc/shadow file to check for any bad passwords"
 
 #This clears out the HOST file so that unintentional/malicious networks are accidentally accessed.
 echo "Clearing HOSTS file"
-cp /etc/hosts ~/Desktop/backups/hosts.txt
+cp /etc/hosts backups/hosts.txt
 echo "127.0.0.1	localhost" > /etc/hosts
 echo "127.0.1.1	ubuntu"  >> /etc/hosts
 echo "::1     ip6-localhost ip6-loopback" >> /etc/hosts
