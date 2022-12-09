@@ -106,6 +106,13 @@ else
   echo "Root UID is set to 0"
 fi
 
+chmod 644 "/etc/passwd"
+echo "Look at /etc/passwd"
+echo "Username:x:UID:GID:Comments:Home Directory:Command Shell"
+read -p "Make sure all user UID are between 1000 and 60000"
+read -p "Make sure all home directories are correct"
+read -p "Make sure all command shells are right: /bin/bash, /sbin/nologin"
+
 echo "Finding All media files, putting in media file: mediafiles.txt"
 echo "What is the the home directory? ie /home"
 read homeDir
@@ -631,6 +638,18 @@ else
 fi
 
 echo "Need to add audit stuff too"
+
+echo "AI Stuff"
+
+apt install lynis
+lynis audit system
+read -p "Lynis ran"
+
+find /etc ! -user root > notRootOwned.txt
+find /etc -perm /o+w > badFilePermsinEtc.txt
+read -p "Bad etc files in notRootOwned.txt and badFilePermsinEtc.txt"
+
+
 
 read -p "*** Edit firefox settings as well. Video of what to do **(Skip to 6:45)**: https://www.youtube.com/watch?v=JVxkTqLoyGY ***"
 read -p "*** Make sure to do pam stuff, follow: https://s3.amazonaws.com/cpvii/Training+materials/Unit+Eight+-+Ubuntu+Security.pdf ***"
