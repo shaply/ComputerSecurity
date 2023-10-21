@@ -657,4 +657,5 @@ read -p "*** Run ETCFilePerm.py and make sure all file settings besides rc and s
 read -p "*** Find Trojans in /etc/rc* by looking at added time and comparing with others, and in /tmp ***"
 read -p "*** Checklist for critical services include: Making sure they work, making sure they start up at boot, making sure configs are right, making sure file perms are right ***"
 read -p "*** When using the time reader and stuff, check: /etc, /usr, /opt, /home ***VERY IMPORTANT"
+read -p "*** ALL FILES ARE CREATED IN THE DESKTOP DIRECTOR, SO ANY FILE FOUND THaT IS NOT IN THE DESKTOP FOLDER IS PROBABLY NOT GOOD ***"
 echo "Finally, do the time reader stuff and good luck!"
