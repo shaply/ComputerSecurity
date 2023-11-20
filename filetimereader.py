@@ -37,6 +37,14 @@ def filelister(startpath):
 
   #Go through every file in directory
   for File in files:
+    if ("proc" in File):
+      continue
+    k = 0
+    while (k < len(File)):
+      if (File[k] == "'"):
+        File = File[:k] + "\\" + File[k:]
+        k += 1
+      k += 1
     if File[-1]=="/":
       print("'"+path+File+"'")
       allfiles=allfiles+filelister(path+File)
@@ -52,23 +60,26 @@ def filetimewriter(files):
     dataWriter.write("FileName"+","+"Date changed"+","+"Date Modified"+","+"\n")
 
     for File in files:
-      output=subprocess.check_output("stat -c %z "+File, shell=True).decode().split()
-      output2 = subprocess.check_output("stat -c %y "+File, shell=True).decode().split()
-      #Make text to write in file, good format
-      writee=File+','+output[0]+' '+output[2]+','+output2[0]+' '+output2[2]+','+'\n'
-      print(writee)
-      if writee[:2]=="''":
-        writee=writee[2:]
-      nWritee=''
-      for char in writee:
-        nWritee+=char
-        if "''/" in nWritee:
-          nWritee=nWritee[:-3]
+      try:
+        output=subprocess.check_output("stat -c %z "+File, shell=True).decode().split()
+        output2 = subprocess.check_output("stat -c %y "+File, shell=True).decode().split()
+        #Make text to write in file, good format
+        writee=File+','+output[0]+' '+output[2]+','+output2[0]+' '+output2[2]+','+'\n'
+        print(writee)
+        if writee[:2]=="''":
+          writee=writee[2:]
+        nWritee=''
+        for char in writee:
+          nWritee+=char
+          if "''/" in nWritee:
+            nWritee=nWritee[:-3]
 
-      dataWriter.write(nWritee)
+        dataWriter.write(nWritee)
+      except:
+        pass
 
 global startlocation
 startlocation = os.getcwd()
 
-allfiles = filelister("/home/dave/Desktop")
+allfiles = filelister("/")
 filetimewriter(allfiles)
