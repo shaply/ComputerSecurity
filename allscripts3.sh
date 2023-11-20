@@ -6,6 +6,7 @@ echo "Linux Ubuntu Script\nThe Ultimate One\nLet's Pray it Works"
 read -p "Make Sure you have done the forensics Questions"
 read -p "Did you run as root? If not, rerun"
 read -p "Did you make this in ~/Desktop/"
+read -p "Make sure to run filetimereader.py on the side"
 
 mkdir -p backups
 chmod 777 backups
@@ -378,6 +379,9 @@ add-apt-repository "deb http://archive.ubuntu.com/ubuntu precise-updates univers
 echo "Updates also come from security and recommended updates"
 echo "Make SURE you still check out /etc/apt/sources.list to see if there are any bad links"
 
+echo $( comm -23 <(apt-mark showmanual | sort -u) <(gzip -dc /var/log/installer/initial-status.gz | sed -n 's/^Package: //p' | sort -u) ) > "manuallyInstalled.secu"
+read -p "look at manuallyInstalled.secu for manually installed apps"
+
 apt update
 apt upgrade
 apt update
@@ -399,7 +403,7 @@ echo '' > sysctlconf.py
 for i in $scriptsysctlconfig; do i=$( tr '|' ' ' <<<"$i" ); echo "$i" >> sysctlconf.py; done
 cp /etc/sysctl.conf backups/sysctl.conf
 python3 sysctlconf.py
-echo "Finished configuring /etc/sysctl.conf"
+echo "Finished configuring /etc/sysctl.conf. If there is the \n error in the file, then just do ctrl+h in gedit, and then type in the find box:'\\\n' and replace with \n"
 
 install cracklib
 install auditd
@@ -653,7 +657,7 @@ find /etc ! -user root > notRootOwned.secu
 find /etc -perm /o+w > badFilePermsinEtc.secu
 read -p "Bad etc files in notRootOwned.secu and badFilePermsinEtc.secu"
 
-
+curl -L https://github.com/carlospolop/PEASS-ng/releases/latest/download/linpeas.sh | sh
 
 read -p "*** Edit firefox settings as well. Video of what to do **(Skip to 6:45)**: https://www.youtube.com/watch?v=JVxkTqLoyGY ***"
 read -p "*** Make sure to do pam stuff, follow: https://s3.amazonaws.com/cpvii/Training+materials/Unit+Eight+-+Ubuntu+Security.pdf ***"
