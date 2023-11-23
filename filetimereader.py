@@ -37,7 +37,7 @@ def filelister(startpath):
 
   #Go through every file in directory
   for File in files:
-    if ("proc" in File):
+    if ("/proc" in File or "/snap" in File):
       continue
     k = 0
     while (k < len(File)):
@@ -57,7 +57,7 @@ def filetimewriter(files):
   os.chdir(startlocation)
   # Variable for writing file dates in the csv file
   with open("filedata.csv", "w") as dataWriter:
-    dataWriter.write("FileName"+","+"Date changed"+","+"Date Modified"+","+"\n")
+    dataWriter.write("FileName"+",,,"+"Date changed"+",,,"+"Date Modified"+",,,"+"\n")
 
     for File in files:
       try:
