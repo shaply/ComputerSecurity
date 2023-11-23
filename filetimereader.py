@@ -57,7 +57,7 @@ def filetimewriter(files):
   os.chdir(startlocation)
   # Variable for writing file dates in the csv file
   with open("filedata.csv", "w") as dataWriter:
-    dataWriter.write("FileName"+",,,"+"Date changed"+",,,"+"Date Modified"+",,,"+"\n")
+    dataWriter.write("FileName"+":"+"Date changed"+":"+"Date Modified"+":"+"\n")
 
     for File in files:
       try:
