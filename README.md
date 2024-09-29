@@ -1,5 +1,5 @@
 # ComputerSecurity
 
-Run this code to download it all: 
+A little something I made for Cyberpatriot competitions. 
 
-tinyurl: 
+The final product is allscripts3.sh
